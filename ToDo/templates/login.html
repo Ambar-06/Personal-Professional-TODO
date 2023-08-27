@@ -38,40 +38,9 @@
 </div>
 {% endblock %}
 
-{% comment %} {% block scripts %}
+{% block scripts %}
 {{ block.super }}
-
 <script>
-    function validate_password(e){
-        const confirmpass = document.getElementById('confirmpassword').value;
-        const originpass = document.getElementById('signuppassword').value;
-        if (confirmpass === originpass){
-            document.getElementById('passwordMatchBlock').innerHTML = 'Password match.'
-            document.getElementById('passwordMatchBlock').style = 'color:green;'
-            document.getElementById('passwordMatchBlock').classList.remove('horizontal-shake');
-            console.log('OK')
-        }
-        else if (confirmpass !== originpass){
-            document.getElementById('passwordMatchBlock').classList.add('horizontal-shake');
-            document.getElementById('passwordMatchBlock').style = 'color:red;'
-            document.getElementById('passwordMatchBlock').innerHTML = 'Password does not match.'
-    }
-}
-    $(document).ready(function(){
-        $('#toggleConfirmPassword').click(function(){
-            const imgpath = document.getElementById('toggleConfirmPasswordImg').src;
-            const img_array = imgpath.split("/");
-            const img = img_array[img_array.length - 1]
-            if(img === "blind.png"){
-                document.getElementById('toggleConfirmPasswordImg').src = "{% static 'img/eye.png' %}";document.getElementById('confirmpassword').type =  'text';
-                console.log('clicked toggleConfirmPassword')
-            }
-            else{
-                document.getElementById('toggleConfirmPasswordImg').src = "{% static 'img/blind.png' %}";document.getElementById('confirmpassword').type =  'password';
-                console.log('clicked toggleConfirmPassword')
-            }
-        })
-    })
     $(document).ready(function(){
         $('#togglePassword').click(function(){
             const imgpath = document.getElementById('togglePasswordImg').src;
@@ -86,6 +55,6 @@
                 console.log('clicked togglePassword')
             }
         })
-    }) {% endcomment %}
-{% comment %} </script> {% endcomment %}
-{% comment %} {% endblock %} {% endcomment %}
+    })
+ </script>
+{% endblock %} 
