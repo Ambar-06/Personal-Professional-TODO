@@ -4,6 +4,12 @@ from rest_framework.decorators import permission_classes, authentication_classes
 from rest_framework.response import Response
 from rest_framework.parsers import JSONParser
 from rest_framework import status
+from pydantic import ValidationError
+from django.contrib import messages
+
+
+from schemas import *
+from models import *
 
 
 # Create your views here.
@@ -20,3 +26,27 @@ def test_f(request):
 def signup_f(request):
     if request.method == 'GET':
         return render(request, 'signup.html')
+    elif request.method == 'POST':
+        try:
+            validated_data = UserSignUpDataSchema(**request.data)
+        except ValidationError as e:
+            messages.error(request, 'Invalid Data, Please share valid data.')
+            return render(request, 'signup.html')
+        SignUpName = validated_data.signupname
+        SignUpEmail = validated_data.signupemail
+        SignUpNumber = validated_data.signupnumber
+        SignUpPassword = validated_data.signuppassword
+        SignUpConfirmPassword = validated_data.confirmpassword
+
+        if SignUpPassword != SignUpConfirmPassword:
+            messages.error(request, 'Password did not match.')
+            return render(request, 'signup.html')
+        
+
+        
+
+
+@api_view(['GET', 'POST'])
+def login_f(request):
+    if request.method == 'GET':
+        return render(request, 'login.html')

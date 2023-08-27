@@ -1,8 +1,7 @@
 {% extends 'index.html' %}
-
 {% load static %}
 
-{% block title %} SignUp {% endblock %}
+{% block title %}Login {% endblock %}
 {% block head %}
 {{ block.super }}
 <link rel="stylesheet" href="{% static 'style.css' %}">
@@ -10,24 +9,16 @@
 
 {% block body %}
 <div class="container mt-5">
-    <h2 class="text-center mb-4">Sign Up to Continue</h2>
+    <h2 class="text-center mb-4">Login</h2>
 
     <div class="row justify-content-center">
         <div class="col-md-6">
             <div class="card p-4">
-                <form class="signup-form" method="POST" action="{% url 'login' %}">
+                <form class="login-form" method="POST" action="{% url 'login' %}">
                     {% csrf_token %}
                     <div class="mb-3">
-                        <label for="signupemail" class="form-label">Email address<b style="color: red;">*</b></label>
+                        <label for="signupemail" class="form-label">Email<b style="color: red;">*</b></label>
                         <input type="email" class="form-control" id="signupemail" name="signupemail" placeholder="name@example.com" required>
-                    </div>
-                    <div class="mb-3">
-                        <label for="signupname" class="form-label">Full Name<b style="color: red;">*</b></label>
-                        <input type="text" class="form-control" id="signupname" name="signupname" placeholder="Ambar Rizvi">
-                    </div>
-                    <div class="mb-3">
-                        <label for="signupnumber" class="form-label">Mobile Number</label>
-                        <input type="text" class="form-control" id="signupnumber" name="signupnumber" placeholder="1234567890">
                     </div>
                     <div class="mb-3">
                         <label for="signuppassword" class="form-label">Password<b style="color: red;">*</b></label>
@@ -37,33 +28,17 @@
                                 <img src="{% static 'img/blind.png' %}" style='height:18px' id="togglePasswordImg">
                             </button>
                         </div>
-                        <div id="passwordHelpBlock" class="form-text">
-                            Your password must be 8-20 characters long, contain letters and numbers only.
-                        </div>
                     </div>
-                    <div class="mb-3">
-                        <label for="confirmpassword" class="form-label">Confirm Password<b style="color: red;">*</b></label>
-                        <div class="input-group">
-                            <input type="password" class="form-control" id="confirmpassword" name="confirmpassword" placeholder="Confirm password" oninput=validate_password(this)>
-                            <button class="btn btn-outline-secondary" type="button" id="toggleConfirmPassword">
-                               <img src="{% static 'img/blind.png' %}" style='height:18px' id="toggleConfirmPasswordImg">
-                            </button>
-                        </div>
-                        <div id="passwordMatchBlock" class="form-text" style="color: red; display: flex;">
-                            Password does not match.
-                        </div>
-                    </div>
-                    </div>
-                    <button type="submit" class="btn btn-primary w-100 mt-3">Sign Up</button>
+                    <button type="submit" class="btn btn-primary w-100 mt-3">Login</button>
                 </form>
-                <p>Already a User? <a href={% url 'login' %}>Login</a> to continue</p>
+                <p>New User? <a href={% url 'signup' %}>Signup</a> from here</p>
             </div>
         </div>
     </div>
 </div>
 {% endblock %}
 
-{% block scripts %}
+{% comment %} {% block scripts %}
 {{ block.super }}
 
 <script>
@@ -111,6 +86,6 @@
                 console.log('clicked togglePassword')
             }
         })
-    })
-</script>
-{% endblock %}
+    }) {% endcomment %}
+{% comment %} </script> {% endcomment %}
+{% comment %} {% endblock %} {% endcomment %}
