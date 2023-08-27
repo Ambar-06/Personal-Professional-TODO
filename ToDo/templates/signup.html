@@ -1,0 +1,115 @@
+{% extends 'index.html' %}
+
+{% load static %}
+
+{% block title %} SignUp {% endblock %}
+{% block head %}
+{{ block.super }}
+<link rel="stylesheet" href="{% static 'style.css' %}">
+{% endblock %}
+
+{% block body %}
+<div class="container mt-5">
+    <h2 class="text-center mb-4">Sign Up to Continue</h2>
+
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card p-4">
+                <form class="signup-form">
+                    <div class="mb-3">
+                        <label for="signupemail" class="form-label">Email address<b style="color: red;">*</b></label>
+                        <input type="email" class="form-control" id="signupemail" name="signupemail" placeholder="name@example.com" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="signupname" class="form-label">Full Name<b style="color: red;">*</b></label>
+                        <input type="text" class="form-control" id="signupname" name="signupname" placeholder="Ambar Rizvi">
+                    </div>
+                    <div class="mb-3">
+                        <label for="signupnumber" class="form-label">Mobile Number</label>
+                        <input type="text" class="form-control" id="signupnumber" name="signupnumber" placeholder="1234567890">
+                    </div>
+                    <div class="mb-3">
+                        <label for="signuppassword" class="form-label">Password<b style="color: red;">*</b></label>
+                        <div class="input-group">
+                            <input type="password" class="form-control" id="signuppassword" name="signuppassword" aria-describedby="passwordHelpBlock" placeholder="Enter password">
+                            <button class="btn btn-outline-secondary" type="button" id="togglePassword">
+                                <img src="{% static 'img/blind.png' %}" style='height:18px' id="togglePasswordImg">
+                            </button>
+                        </div>
+                        <div id="passwordHelpBlock" class="form-text">
+                            Your password must be 8-20 characters long, contain letters and numbers only.
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <label for="confirmpassword" class="form-label">Confirm Password<b style="color: red;">*</b></label>
+                        <div class="input-group">
+                            <input type="password" class="form-control" id="confirmpassword" name="confirmpassword" placeholder="Confirm password" oninput=validate_password(this)>
+                            <button class="btn btn-outline-secondary" type="button" id="toggleConfirmPassword">
+                               <img src="{% static 'img/blind.png' %}" style='height:18px' id="toggleConfirmPasswordImg">
+                            </button>
+                        </div>
+                        <div id="passwordMatchBlock" class="form-text" style="color: red; display: flex;">
+                            Password does not match.
+                        </div>
+                    </div>
+                    </div>
+                    <button type="submit" class="btn btn-primary w-100 mt-3">Sign Up</button>
+                </form>
+                <p>Already a User? <a>Login</a> to continue</p>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+{{ block.super }}
+
+<script>
+    function validate_password(e){
+        const confirmpass = document.getElementById('confirmpassword').value;
+        const originpass = document.getElementById('signuppassword').value;
+        if (confirmpass === originpass){
+            document.getElementById('passwordMatchBlock').innerHTML = 'Password match.'
+            document.getElementById('passwordMatchBlock').style = 'color:green;'
+            document.getElementById('passwordMatchBlock').classList.remove('horizontal-shake');
+            console.log('OK')
+        }
+        else if (confirmpass !== originpass){
+            document.getElementById('passwordMatchBlock').classList.add('horizontal-shake');
+            document.getElementById('passwordMatchBlock').style = 'color:red;'
+            document.getElementById('passwordMatchBlock').innerHTML = 'Password does not match.'
+    }
+}
+    $(document).ready(function(){
+        $('#toggleConfirmPassword').click(function(){
+            const imgpath = document.getElementById('toggleConfirmPasswordImg').src;
+            const img_array = imgpath.split("/");
+            const img = img_array[img_array.length - 1]
+            if(img === "blind.png"){
+                document.getElementById('toggleConfirmPasswordImg').src = "{% static 'img/eye.png' %}";document.getElementById('confirmpassword').type =  'text';
+                console.log('clicked toggleConfirmPassword')
+            }
+            else{
+                document.getElementById('toggleConfirmPasswordImg').src = "{% static 'img/blind.png' %}";document.getElementById('confirmpassword').type =  'password';
+                console.log('clicked toggleConfirmPassword')
+            }
+        })
+    })
+    $(document).ready(function(){
+        $('#togglePassword').click(function(){
+            const imgpath = document.getElementById('togglePasswordImg').src;
+            const img_array = imgpath.split("/");
+            const img = img_array[img_array.length - 1]
+            if(img === "blind.png"){
+                document.getElementById('togglePasswordImg').src = "{% static 'img/eye.png' %}";document.getElementById('signuppassword').type =  'text';
+                console.log('clicked togglePassword')
+            }
+            else{
+                document.getElementById('togglePasswordImg').src = "{% static 'img/blind.png' %}";document.getElementById('signuppassword').type =  'password';
+                console.log('clicked togglePassword')
+            }
+        })
+    })
+</script>
+{% endblock %}

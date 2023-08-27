@@ -15,3 +15,8 @@ def test_f(request):
         "message" : 'Working well.',
     }
     return Response(json_data, status=status.HTTP_200_OK)
+
+@api_view(['GET', 'POST'])
+def signup_f(request):
+    if request.method == 'GET':
+        return render(request, 'signup.html')
