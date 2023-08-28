@@ -29,19 +29,38 @@ def signup_f(request):
     if request.method == 'GET':
         return render(request, 'signup.html')
     elif request.method == 'POST':
+        req_data = {
+            'signupname':request.data.get('signupname'),
+            'signupemail':request.data.get('signupemail'),
+            'signupnumber': request.data.get('signupnumber'),
+            'signuppassword': request.data.get('signuppassword'),
+            'confirmpassword': request.data.get('confirmpassword')
+        }
+        if UserSignUpModel.objects.filter(SignUpEmail=request.data.get('signupemail')):
+            messages.error(request, 'User already registered.')
+            return render(request, 'signup.html')
+        if UserSignUpModel.objects.filter(SignUpNumber=request.data.get('signupnumber')):
+            messages.error(request, 'Number already registered.')
+            return render(request, 'signup.html')
         try:
             try:
-                validated_data = UserSignUpDataSchema(**request.data)
+                validated_data = UserSignUpDataSchema(**req_data)
             except ValidationError as e:
-                messages.error(request, 'Invalid Data, Please share valid data.')
+                messages.error(request, f'{e.errors()}')
                 return render(request, 'signup.html')
             SignUpName = validated_data.signupname
             SignUpEmail = validated_data.signupemail
             SignUpNumber = validated_data.signupnumber
             SignUpPassword = validated_data.signuppassword
             SignUpConfirmPassword = validated_data.confirmpassword
+            print(SignUpName)
+            print(SignUpEmail)
+            print(SignUpNumber)
+            print(SignUpPassword)
+            print(SignUpConfirmPassword)
 
             if SignUpPassword != SignUpConfirmPassword:
+                print('DID NOT MATCH')
                 messages.error(request, 'Password did not match.')
                 return render(request, 'signup.html')
             
@@ -55,7 +74,9 @@ def signup_f(request):
                     SignUpNumber=SignUpNumber,
                     SignUpPassword=password_hashed
                 )
+            print('GOT IT')
             UserData.save()
+            print('SAVED')
             messages.success(request, 'Your email has been registered successfully. Login to continue')
             return render(request, 'signup.html')
         except Exception as e:
