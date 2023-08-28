@@ -17,13 +17,13 @@
                 <form class="login-form" method="POST" action="{% url 'login' %}">
                     {% csrf_token %}
                     <div class="mb-3">
-                        <label for="signupemail" class="form-label">Email<b style="color: red;">*</b></label>
-                        <input type="email" class="form-control" id="signupemail" name="signupemail" placeholder="name@example.com" required>
+                        <label for="loginemail" class="form-label">Email<b style="color: red;">*</b></label>
+                        <input type="email" class="form-control" id="loginemail" name="loginemail" placeholder="name@example.com" required>
                     </div>
                     <div class="mb-3">
                         <label for="signuppassword" class="form-label">Password<b style="color: red;">*</b></label>
                         <div class="input-group">
-                            <input type="password" class="form-control" id="signuppassword" name="signuppassword" aria-describedby="passwordHelpBlock" placeholder="Enter password">
+                            <input type="password" class="form-control" id="loginpassword" name="loginpassword" aria-describedby="passwordHelpBlock" placeholder="Enter password">
                             <button class="btn btn-outline-secondary" type="button" id="togglePassword">
                                 <img src="{% static 'img/blind.png' %}" style='height:18px' id="togglePasswordImg">
                             </button>
@@ -47,11 +47,13 @@
             const img_array = imgpath.split("/");
             const img = img_array[img_array.length - 1]
             if(img === "blind.png"){
-                document.getElementById('togglePasswordImg').src = "{% static 'img/eye.png' %}";document.getElementById('signuppassword').type =  'text';
+                document.getElementById('togglePasswordImg').src = "{% static 'img/eye.png' %}";
+                document.getElementById('loginpassword').type =  'text';
                 console.log('clicked togglePassword')
             }
             else{
-                document.getElementById('togglePasswordImg').src = "{% static 'img/blind.png' %}";document.getElementById('signuppassword').type =  'password';
+                document.getElementById('togglePasswordImg').src = "{% static 'img/blind.png' %}";
+                document.getElementById('loginpassword').type =  'password';
                 console.log('clicked togglePassword')
             }
         })

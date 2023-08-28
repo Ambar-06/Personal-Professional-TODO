@@ -53,11 +53,6 @@ def signup_f(request):
             SignUpNumber = validated_data.signupnumber
             SignUpPassword = validated_data.signuppassword
             SignUpConfirmPassword = validated_data.confirmpassword
-            print(SignUpName)
-            print(SignUpEmail)
-            print(SignUpNumber)
-            print(SignUpPassword)
-            print(SignUpConfirmPassword)
 
             if SignUpPassword != SignUpConfirmPassword:
                 print('DID NOT MATCH')
@@ -89,4 +84,12 @@ def login_f(request):
     if request.method == 'GET':
         return render(request, 'login.html')
     elif request.method == 'POST':
+        req_data = {
+            'loginemail':request.data.get('loginemail'),
+            'loginpassword': request.data.get('loginpassword')
+        }
+        if UserSignUpModel.objects.filter(SignUpEmail=request.data.get('loginemail')) == None or UserSignUpModel.objects.filter(SignUpEmail=request.data.get('loginemail')) == [] or UserSignUpModel.objects.filter(SignUpEmail=request.data.get('loginemail')) == '':
+            messages.error(request, 'User not found.')
+            return render(request, 'login.html')
+            
         return render(request, 'login.html')
