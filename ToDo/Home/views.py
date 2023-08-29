@@ -111,13 +111,27 @@ def login_f(request):
             messages.error(request, 'Invalid password.')
             return render(request, 'login.html')
         else:
-            return redirect('home')
+            return redirect('home', permanent=True)
 
         return render(request, 'login.html')
 
 
 @api_view(['GET', 'POST'])
 def home_f(request):
-    if request.method == 'GET':
+    is_authenticated = request.session.get('is_authenticated', False)
+    if is_authenticated:
+        print('is_authenticated')
+        # User is authenticated, proceed with rendering the home page
         return render(request, 'home.html')
-    return render(request, 'home.html')
+    else:
+        # User is not authenticated, redirect to the login page
+        return redirect('login')
+    # if request.method == 'GET':
+    #     return render(request, 'home.html')
+    # return render(request, 'home.html')
+
+@api_view(['POST'])
+def logout_f(request):
+    if 'is_authenticated' in request.session:
+        del request.session['is_authenticated']
+    return HttpResponse(status=200)

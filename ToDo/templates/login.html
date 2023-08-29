@@ -68,6 +68,14 @@
                 console.log('clicked togglePassword')
             }
         })
-    })
+    });
+console.log('YES')
+console.log({{ is_Authenticated }})
+console.log({{ is_Authenticated }}=== 1)
+const is_Authenticated = {{ is_Authenticated }}
+console.log(location)
+if (is_Authenticated === 1){
+        location.replace("http://127.0.0.1:8000/home/")
+}
  </script>
 {% endblock %} 

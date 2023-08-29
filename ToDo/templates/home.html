@@ -9,29 +9,26 @@
 
 
 {% block body %}
-<div id="modal" class="modal">
-    <div class="modal-content">
-        <p>Welcome to our home page! Explore our amazing content.</p>
-        <button id="modal-close">Continue</button>
-    </div>
-</div>
-
 {% endblock %}
 
 {% block scripts %}
 {{ block.super }}
 
 <script>
-    const modal = document.getElementById("modal");
-    const modalClose = document.getElementById("modal-close");
-    
-    // Display the modal
-    modal.style.display = "block";
-    
-    // Close the modal when the user clicks the "Continue" button
-    modalClose.addEventListener("click", function() {
-        modal.style.display = "none";
-    });
-    {% comment %} window.location.replace("");  {% endcomment %}
+{% comment %} // Check the user's authentication status
+const isAuthenticated = ''
+
+// Handle page navigation based on authentication status
+if (!isAuthenticated) {
+    window.location.href = 'login/'; 
+} {% endcomment %}
+console.log('YES')
+console.log({{ is_Authenticated }})
+console.log({{ is_Authenticated }}=== 1)
+const is_Authenticated = {{ is_Authenticated }}
+console.log(location)
+if (is_Authenticated === 1){
+        location.replace("http://127.0.0.1:8000/home/")
+}
 </script>
 {% endblock %}
