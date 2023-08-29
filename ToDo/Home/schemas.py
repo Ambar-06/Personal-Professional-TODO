@@ -12,3 +12,11 @@ class UserSignUpDataSchema(BaseModel):
 
     class ConfigDict:
         from_attributes = True
+
+class UserLoginDataSchema(BaseModel):
+
+    loginemail : str
+    loginpassword : str
+
+    class ConfigDict:
+        from_attributes = True
