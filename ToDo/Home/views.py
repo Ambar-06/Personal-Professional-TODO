@@ -1,6 +1,8 @@
 from django.shortcuts import render, HttpResponseRedirect, HttpResponse, redirect
 from rest_framework.permissions import IsAdminUser, IsAuthenticated, IsAuthenticatedOrReadOnly
 from rest_framework.decorators import permission_classes, authentication_classes, api_view
+from django.contrib.auth.decorators import login_required
+from django.contrib.auth import authenticate, login
 from rest_framework.response import Response
 from rest_framework.parsers import JSONParser
 from rest_framework import status
@@ -23,6 +25,8 @@ def test_f(request):
         "message" : 'Working well.',
     }
     return Response(json_data, status=status.HTTP_200_OK)
+
+
 
 @api_view(['GET', 'POST'])
 def signup_f(request):
@@ -78,8 +82,6 @@ def signup_f(request):
             print(e)
             return HttpResponse(f'<h1>{e}</h1>')
 
-
-@api_view(['GET', 'POST'])
 def login_f(request):
     if request.method == 'GET':
         return render(request, 'login.html')
@@ -88,10 +90,7 @@ def login_f(request):
             'loginemail':request.data.get('loginemail'),
             'loginpassword': request.data.get('loginpassword')
         }
-        print(UserSignUpModel.objects.filter(SignUpEmail=request.data.get('loginemail')), '*-*-*-*-*')
-        print(len(UserSignUpModel.objects.filter(SignUpEmail=request.data.get('loginemail'))), '*-*-*-*-*')
-        print(request.data.get('loginemail'))
-        print(request.data.get('loginpassword'))
+
         if UserSignUpModel.objects.filter(SignUpEmail=request.data.get('loginemail')) == None or UserSignUpModel.objects.filter(SignUpEmail=request.data.get('loginemail')) == [] or UserSignUpModel.objects.filter(SignUpEmail=request.data.get('loginemail')) == '' or len(UserSignUpModel.objects.filter(SignUpEmail=request.data.get('loginemail'))) == 0:
             messages.error(request, 'User not found.')
             return render(request, 'login.html')
@@ -105,27 +104,32 @@ def login_f(request):
 
         password_encoded = Password.encode()
         password_hashed = hashlib.md5(password_encoded).hexdigest()
-
-        UserData = UserSignUpModel.objects.filter(SignUpEmail=request.data.get('loginemail')).first()
-        if password_hashed != UserData.SignUpPassword:
-            messages.error(request, 'Invalid password.')
-            return render(request, 'login.html')
+        user = authenticate(request, SignUpEmail=Email, SignUpPassword=password_hashed)
+        print(user, 'YEH HAI USER')
+        if user is not None:
+            print('TRUE')
+            login(request, user)
+            return redirect('home')
         else:
-            return redirect('home', permanent=True)
+            messages.error(request, 'Invalid email or password1111.')
+            return redirect('login')
+        
 
-        return render(request, 'login.html')
+        
+        # UserData = UserSignUpModel.objects.filter(SignUpEmail=request.data.get('loginemail')).first()
+        # if password_hashed != UserData.SignUpPassword:
+        #     messages.error(request, 'Invalid password.')
+        #     return render(request, 'login.html')
+        # else:
+        #     return redirect('home', permanent=True)
+
+        # return render(request, 'login.html')
 
 
-@api_view(['GET', 'POST'])
+# @api_view(['GET', 'POST'])
+@login_required(login_url='login')
 def home_f(request):
-    is_authenticated = request.session.get('is_authenticated', False)
-    if is_authenticated:
-        print('is_authenticated')
-        # User is authenticated, proceed with rendering the home page
         return render(request, 'home.html')
-    else:
-        # User is not authenticated, redirect to the login page
-        return redirect('login')
     # if request.method == 'GET':
     #     return render(request, 'home.html')
     # return render(request, 'home.html')

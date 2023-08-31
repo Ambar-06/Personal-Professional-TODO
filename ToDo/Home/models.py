@@ -11,6 +11,7 @@ class UserSignUpModel(models.Model):
     SignUpEmail = models.CharField(max_length=255, blank=False, null=False, unique=True)
     SignUpNumber = PhoneNumberField(null=False, blank=False, unique=True)
     SignUpPassword = models.CharField(max_length=500, blank=False, null=False)
+    last_login = models.DateTimeField(null=True, blank=True)
 
     def __str__(self):
-        return str(self.UserUUID)
+        return str(self.SignUpEmail)

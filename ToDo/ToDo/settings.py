@@ -44,6 +44,11 @@ INSTALLED_APPS = [
     'rest_framework',
 ]
 
+AUTHENTICATION_BACKENDS = [
+    'Home.auth_backends.CustomUserBackend', 
+    'django.contrib.auth.backends.ModelBackend',
+]
+
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
