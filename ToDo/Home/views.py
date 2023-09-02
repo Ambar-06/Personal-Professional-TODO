@@ -1,13 +1,14 @@
 from django.shortcuts import render, HttpResponseRedirect, HttpResponse, redirect
-from rest_framework.permissions import IsAdminUser, IsAuthenticated, IsAuthenticatedOrReadOnly
-from rest_framework.decorators import permission_classes, authentication_classes, api_view
+from django.views.decorators.cache import cache_control
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import authenticate, login
+from django.contrib.auth.views import LoginView
 from rest_framework.response import Response
 from rest_framework.parsers import JSONParser
 from rest_framework import status
 from pydantic import ValidationError
 from django.contrib import messages
+from django.urls import reverse
 
 import hashlib
 
@@ -17,33 +18,22 @@ from .models import *
 
 
 # Create your views here.
-@api_view(['GET'])
-def test_f(request):
-    json_data = {
-        "status" : 200,
-        "data" : '',
-        "message" : 'Working well.',
-    }
-    return Response(json_data, status=status.HTTP_200_OK)
 
-
-
-@api_view(['GET', 'POST'])
 def signup_f(request):
     if request.method == 'GET':
         return render(request, 'signup.html')
     elif request.method == 'POST':
         req_data = {
-            'signupname':request.data.get('signupname'),
-            'signupemail':request.data.get('signupemail'),
-            'signupnumber': request.data.get('signupnumber'),
-            'signuppassword': request.data.get('signuppassword'),
-            'confirmpassword': request.data.get('confirmpassword')
+            'signupname':request.POST.get('signupname'),
+            'signupemail':request.POST.get('signupemail'),
+            'signupnumber': request.POST.get('signupnumber'),
+            'signuppassword': request.POST.get('signuppassword'),
+            'confirmpassword': request.POST.get('confirmpassword')
         }
-        if UserSignUpModel.objects.filter(SignUpEmail=request.data.get('signupemail')):
+        if UserSignUpModel.objects.filter(SignUpEmail=request.POST.get('signupemail')):
             messages.error(request, 'User already registered.')
             return render(request, 'signup.html')
-        if UserSignUpModel.objects.filter(SignUpNumber=request.data.get('signupnumber')):
+        if UserSignUpModel.objects.filter(SignUpNumber=request.POST.get('signupnumber')):
             messages.error(request, 'Number already registered.')
             return render(request, 'signup.html')
         try:
@@ -82,16 +72,18 @@ def signup_f(request):
             print(e)
             return HttpResponse(f'<h1>{e}</h1>')
 
+@cache_control(no_cache=True, must_revalidate=True)
 def login_f(request):
     if request.method == 'GET':
+        request.session.flush()
         return render(request, 'login.html')
     elif request.method == 'POST':
         req_data = {
-            'loginemail':request.data.get('loginemail'),
-            'loginpassword': request.data.get('loginpassword')
+            'loginemail':request.POST.get('loginemail'),
+            'loginpassword': request.POST.get('loginpassword')
         }
 
-        if UserSignUpModel.objects.filter(SignUpEmail=request.data.get('loginemail')) == None or UserSignUpModel.objects.filter(SignUpEmail=request.data.get('loginemail')) == [] or UserSignUpModel.objects.filter(SignUpEmail=request.data.get('loginemail')) == '' or len(UserSignUpModel.objects.filter(SignUpEmail=request.data.get('loginemail'))) == 0:
+        if UserSignUpModel.objects.filter(SignUpEmail=request.POST.get('loginemail')) == None or UserSignUpModel.objects.filter(SignUpEmail=request.POST.get('loginemail')) == [] or UserSignUpModel.objects.filter(SignUpEmail=request.POST.get('loginemail')) == '' or len(UserSignUpModel.objects.filter(SignUpEmail=request.POST.get('loginemail'))) == 0:
             messages.error(request, 'User not found.')
             return render(request, 'login.html')
         try:
@@ -104,37 +96,62 @@ def login_f(request):
 
         password_encoded = Password.encode()
         password_hashed = hashlib.md5(password_encoded).hexdigest()
-        user = authenticate(request, SignUpEmail=Email, SignUpPassword=password_hashed)
-        print(user, 'YEH HAI USER')
-        if user is not None:
-            print('TRUE')
-            login(request, user)
-            return redirect('home')
+
+        UserData = UserSignUpModel.objects.filter(SignUpEmail=request.POST.get('loginemail')).first()
+        if password_hashed != UserData.SignUpPassword:
+            messages.error(request, 'Invalid password.')
+            return render(request, 'login.html')
         else:
-            messages.error(request, 'Invalid email or password1111.')
-            return redirect('login')
-        
+            print(request.POST.get('loginemail'), "THEEEK PEHLE")
+            request.session['loginemail'] = req_data['loginemail']
+            request.session['loginpassword'] = req_data['loginpassword']
+            return redirect(reverse("home"))
 
-        
-        # UserData = UserSignUpModel.objects.filter(SignUpEmail=request.data.get('loginemail')).first()
-        # if password_hashed != UserData.SignUpPassword:
-        #     messages.error(request, 'Invalid password.')
-        #     return render(request, 'login.html')
-        # else:
-        #     return redirect('home', permanent=True)
-
-        # return render(request, 'login.html')
+        return render(request, 'login.html')
 
 
-# @api_view(['GET', 'POST'])
-@login_required(login_url='login')
+
+def is_authenticated(request):
+    loginemail = request.session.get('loginemail')
+    loginpassword = request.session.get('loginpassword')
+
+    # Check if a user with the provided email exists in the custom user model
+    user_data = UserSignUpModel.objects.filter(SignUpEmail=loginemail).first()
+    print(user_data)
+    if user_data is None:
+        # User with the provided email doesn't exist
+        return False
+
+    # Hash the provided password and compare it with the stored hashed password
+    password_encoded = loginpassword.encode()
+    password_hashed = hashlib.md5(password_encoded).hexdigest()
+
+    if password_hashed != user_data.SignUpPassword:
+        # Invalid password
+        return False
+
+    # Authentication succeeded
+    return True
+
+
+@cache_control(no_cache=True, must_revalidate=True)
 def home_f(request):
-        return render(request, 'home.html')
-    # if request.method == 'GET':
-    #     return render(request, 'home.html')
-    # return render(request, 'home.html')
+    # Retrieve data from the session
+    loginemail = request.session.get('loginemail')
+    loginpassword = request.session.get('loginpassword')
+    print(loginemail)
+    print(request.method)
+    if request.method == 'GET':
+        print('YES')
+        print(request)
+        if is_authenticated(request):
+            if loginemail:
+                print(loginemail, 'INSIDE HOME')  # Print the loginemail
+            return render(request, 'home.html')
+        messages.error(request, 'Session Expired, Please login again to continue.')
+        return redirect(reverse("login"))
 
-@api_view(['POST'])
+
 def logout_f(request):
     if 'is_authenticated' in request.session:
         del request.session['is_authenticated']

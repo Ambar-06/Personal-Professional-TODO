@@ -15,3 +15,13 @@ class UserSignUpModel(models.Model):
 
     def __str__(self):
         return str(self.SignUpEmail)
+
+
+class TasksModel(models.Model):
+
+    _id = models.AutoField(primary_key=True)
+    UserUUID = models.CharField(max_length=255, blank=False, null=False)
+    TaskName = models.CharField(max_length=255, blank=False, null=False)
+    TaskAddedOn = models.CharField(max_length=255, blank=False, null=False, unique=True)
+    TaskDeadline = PhoneNumberField(null=False, blank=False, unique=True)
+    IsCompleted = models.CharField(max_length=500, blank=False, null=False)
