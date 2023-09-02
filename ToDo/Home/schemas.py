@@ -20,3 +20,11 @@ class UserLoginDataSchema(BaseModel):
 
     class ConfigDict:
         from_attributes = True
+
+class TaskDataSchema(BaseModel):
+
+    TaskName : str
+    TaskDeadline : str
+
+    class ConfigDict:
+        from_attributes = True
