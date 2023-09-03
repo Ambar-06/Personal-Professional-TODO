@@ -38,14 +38,35 @@
             <button class="btn btn-primary" id="addTaskButton" data-toggle="modal" data-target="#addTaskModal">Add Task</button>
         </div>
         <!-- Todo list goes here -->
-        <ul class="list-group mt-4" id="todoList">
-            <!-- Tasks will be added dynamically here -->
-        </ul>
+        <table id="example" class="table table-striped table-bordered mt-5" style="width:100%">
+            <thead>
+               <tr >
+                  <th>Task Name</th>
+                  <th>Added on</th>
+                  <th>Deadline</th>                  
+                  <th>Completed</th>
+                  <th>Action</th>
+                  <!-- <th>Salary</th> -->
+               </tr>
+            </thead>
+            <tbody>
+            {% for tasks in TaskList %}
+               <tr data-id="table_rows">
+                     <td class="p-2">{{ tasks.TaskName }}</td>
+                     <td class="p-2">{{ tasks.TaskAddedOn }}</td>
+                     <td class="p-2">{{ tasks.TaskDeadline }}</td>
+                     <td class="p-2">{{ tasks.IsCompleted }}</td>
+                     <td><button class="black-button" data-task-id="{{ tasks.task_id }}" onclick="markAsComplete(this)" style='border: none; display:flex'><img src="{% static 'img/tick.png' %}" style='height:18px' id="togglePasswordImg"></button>
+                     <button class="red-button" data-task-id="{{ tasks.task_id }}" onclick="deleteTask(this)" style='border: none' id='bin'><img src="{% static 'img/bin.png' %}" style='height:18px' id="togglebinImg" onmouseover="onhoverImg(this)"></button></td>
+
+               </tr>
+               {% endfor %}
     </div>
-    </div>
+</div>
 </div>
  <!-- Add Task Modal -->
  <form class="task-form" method="POST" action="{% url 'home' %}">
+    {% csrf_token %}
  <div class="modal fade" id="addTaskModal" tabindex="-1" role="dialog" aria-labelledby="addTaskModalLabel" aria-hidden="true">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
@@ -79,25 +100,68 @@
 
 {% block scripts %}
 {{ block.super }}
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.2/dist/js/bootstrap.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.3/dist/umd/popper.min.js"></script>
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+<script src="{%static 'js/home.js' %}"></script>
 <script>
+    function markAsComplete(button) {
+        // Get the task ID from the data attribute of the button
+        var taskId = button.getAttribute('data-task-id');
+        
+        // Create a URL-encoded form data string
+        var formData = 'task_id=' + encodeURIComponent(taskId);
     
-{% comment %} // Check the user's authentication status
-const isAuthenticated = ''
+        // Create a new XMLHttpRequest object
+        var xhr = new XMLHttpRequest();
+    
+        // Configure the request
+        xhr.open('POST', '/mark_as_complete/', true);
+        xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+    
+        // Define the callback function for when the request is complete
+        xhr.onload = function() {
+            if (xhr.status === 200) {
+                // If the request is successful, reload the page
+                location.reload();
+            } else {
+                // Handle errors here, e.g., display an error message
+                console.error('An error occurred:', xhr.status, xhr.statusText);
+            }
+        };
+    
+            // Send the request with the form data
+        xhr.send(formData);
+    }
+    function deleteTask(button) {
+        // Get the task ID from the data attribute of the button
+        var taskId = button.getAttribute('data-task-id');
 
-// Handle page navigation based on authentication status
-if (!isAuthenticated) {
-    window.location.href = 'login/'; 
-} {% endcomment %}
-console.log('YES')
-console.log({{ is_Authenticated }})
-console.log({{ is_Authenticated }}=== 1)
-const is_Authenticated = {{ is_Authenticated }}
-console.log(location)
-if (is_Authenticated === 1){
-        location.replace("http://127.0.0.1:8000/home/")
-}
+        // Create a URL-encoded form data string
+        var formData = 'task_id=' + encodeURIComponent(taskId);
+    
+        // Create a new XMLHttpRequest object
+        var xhr = new XMLHttpRequest();
+    
+        // Configure the request
+        xhr.open('POST', '/delete_task/', true);
+        xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+    
+        // Define the callback function for when the request is complete
+        xhr.onload = function() {
+            if (xhr.status === 200) {
+                // If the request is successful, reload the page
+                location.reload();
+            } else {
+                // Handle errors here, e.g., display an error message
+                console.error('An error occurred:', xhr.status, xhr.statusText);
+            }
+        };
+    
+        // Send the request with the Form data
+        xhr.send(formData);
+    }
 </script>
 {% endblock %}

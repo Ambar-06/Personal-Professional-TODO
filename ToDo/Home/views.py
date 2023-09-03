@@ -1,4 +1,5 @@
 from django.shortcuts import render, HttpResponseRedirect, HttpResponse, redirect
+from django.http import JsonResponse
 from django.views.decorators.cache import cache_control
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import authenticate, login
@@ -9,6 +10,9 @@ from rest_framework import status
 from pydantic import ValidationError
 from django.contrib import messages
 from django.urls import reverse
+from django.views.decorators.csrf import csrf_exempt
+from django.shortcuts import get_object_or_404
+import datetime
 
 import hashlib
 
@@ -146,16 +150,65 @@ def home_f(request):
         print(request)
         if is_authenticated(request):
             if loginemail:
-                print(loginemail, 'INSIDE HOME')  # Print the loginemail
-            return render(request, 'home.html')
+                print(loginemail, 'INSIDE HOME')
+                taskslist = TasksModel.objects.all().order_by('-task_id')
+            return render(request, 'home.html', {"TaskList" : taskslist})
         messages.error(request, 'Session Expired, Please login again to continue.')
         return redirect(reverse("login"))
-    # if request.method == 'POST':
-    #     print('POST')
-    #     TaskDataSchema
+    if request.method == 'POST':
+        print('POST')
+        req_data = {
+            "TaskName" : request.POST.get('TaskName'),
+            "TaskDeadline" : request.POST.get('TaskDeadline')
+        }
+        try:
+            validated_data = TaskDataSchema(**req_data)
+        except ValidationError as e:
+            messages.error(request, f'{e.errors()}')
+        
+        userData = UserSignUpModel.objects.filter(SignUpEmail=request.session.get('loginemail')).first()
+        taskData = TasksModel(
+            UserUUID = userData.UserUUID,
+            TaskName = validated_data.TaskName,
+            TaskAddedOn = datetime.datetime.now(),
+            TaskDeadline = validated_data.TaskDeadline,
+            IsCompleted = 'False'
+            )
+        taskData.save()
+        return HttpResponseRedirect(request.path_info)
+        print('SAVED')
+        messages.success(request, 'Task has been added to your tasks list.')
+        taskslist = TasksModel.objects.all().order_by('-task_id')
+        return render(request, 'home.html', {"TaskList" : taskslist})
 
 
 def logout_f(request):
     if 'is_authenticated' in request.session:
         del request.session['is_authenticated']
     return HttpResponse(status=200)
+
+@csrf_exempt
+def mark_as_complete(request):
+    if request.method == 'POST':
+        print('Mark as Delete k andar')
+        task_id = request.POST.get('task_id')
+        print(request.POST)
+        print(task_id)
+        task = TasksModel.objects.get(task_id=task_id)
+        print(task.IsCompleted)
+        task.IsCompleted = 'True'
+        print(task.IsCompleted)
+        task.save()
+        return JsonResponse({'message': 'Task marked as complete'})
+    return JsonResponse({'error': 'Invalid request method'})
+
+@csrf_exempt
+def delete_task(request):
+    if request.method == 'POST':
+        task_id = request.POST.get('task_id')
+        print(request.POST)
+        print(task_id)
+        task = TasksModel.objects.get(task_id=task_id)
+        task.delete()
+        return JsonResponse({'message': 'Task deleted'})
+    return JsonResponse({'error': 'Invalid request method'})
