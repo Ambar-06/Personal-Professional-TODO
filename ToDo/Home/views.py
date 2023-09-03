@@ -183,9 +183,8 @@ def home_f(request):
 
 
 def logout_f(request):
-    if 'is_authenticated' in request.session:
-        del request.session['is_authenticated']
-    return HttpResponse(status=200)
+    request.session.flush()
+    return redirect('login')
 
 @csrf_exempt
 def mark_as_complete(request):

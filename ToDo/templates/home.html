@@ -19,7 +19,7 @@
         <div class="collapse navbar-collapse justify-content-end" id="navbarNav">
             <ul class="navbar-nav">
                 <li class="nav-item">
-                    <a class="nav-link" href="#">Logout</a>
+                    <a class="nav-link" href="{% url 'logout' %}">Logout</a>
                 </li>
             </ul>
         </div>
@@ -52,10 +52,10 @@
             <tbody>
             {% for tasks in TaskList %}
                <tr data-id="table_rows">
-                     <td class="p-2">{{ tasks.TaskName }}</td>
+                     <td class="p-2 tasknamecross">{{ tasks.TaskName }}</td>
                      <td class="p-2">{{ tasks.TaskAddedOn }}</td>
                      <td class="p-2">{{ tasks.TaskDeadline }}</td>
-                     <td class="p-2">{{ tasks.IsCompleted }}</td>
+                     <td class="p-2" id='is_completed_task'>{{ tasks.IsCompleted }}</td>
                      <td><button class="black-button" data-task-id="{{ tasks.task_id }}" onclick="markAsComplete(this)" style='border: none; display:flex'><img src="{% static 'img/tick.png' %}" style='height:18px' id="togglePasswordImg"></button>
                      <button class="red-button" data-task-id="{{ tasks.task_id }}" onclick="deleteTask(this)" style='border: none' id='bin'><img src="{% static 'img/bin.png' %}" style='height:18px' id="togglebinImg" onmouseover="onhoverImg(this)"></button></td>
 
@@ -163,5 +163,18 @@
         // Send the request with the Form data
         xhr.send(formData);
     }
+
+    document.addEventListener('DOMContentLoaded', function () {
+        var taskRows = document.querySelectorAll('[data-id="table_rows"]');
+        
+        taskRows.forEach(function (row) {
+            var isCompletedCell = row.querySelector('#is_completed_task');
+            var taskNameCell = row.querySelector('.tasknamecross');
+            
+            if (isCompletedCell.textContent.trim() === 'True') {
+                taskNameCell.innerHTML = '<del>' + taskNameCell.textContent + '</del>';
+            }
+        });
+    });
 </script>
 {% endblock %}
