@@ -151,7 +151,11 @@ def home_f(request):
         if is_authenticated(request):
             if loginemail:
                 print(loginemail, 'INSIDE HOME')
-                taskslist = TasksModel.objects.all().order_by('-task_id')
+                userData = UserSignUpModel.objects.filter(SignUpEmail=loginemail).first()
+                print('YES')
+                print(userData)
+                userId = userData.UserUUID
+                taskslist = TasksModel.objects.filter(UserUUID=userId).order_by('-task_id')
             return render(request, 'home.html', {"TaskList" : taskslist})
         messages.error(request, 'Session Expired, Please login again to continue.')
         return redirect(reverse("login"))
@@ -178,7 +182,7 @@ def home_f(request):
         return HttpResponseRedirect(request.path_info)
         print('SAVED')
         messages.success(request, 'Task has been added to your tasks list.')
-        taskslist = TasksModel.objects.all().order_by('-task_id')
+        # taskslist = TasksModel.objects.filter(UserUUID=).order_by('-task_id')
         return render(request, 'home.html', {"TaskList" : taskslist})
 
 
