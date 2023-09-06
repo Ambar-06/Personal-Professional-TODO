@@ -37,30 +37,208 @@
         <div class="text-center mt-3">
             <button class="btn btn-primary" id="addTaskButton" data-toggle="modal" data-target="#addTaskModal">Add Task</button>
         </div>
-        <!-- Todo list goes here -->
-        <table id="example" class="table table-striped table-bordered mt-5" style="width:100%">
-            <thead>
-               <tr >
-                  <th>Task Name</th>
-                  <th>Added on</th>
-                  <th>Deadline</th>                  
-                  <th>Completed</th>
-                  <th>Action</th>
-                  <!-- <th>Salary</th> -->
-               </tr>
-            </thead>
-            <tbody>
-            {% for tasks in TaskList %}
-               <tr data-id="table_rows">
-                     <td class="p-2 tasknamecross">{{ tasks.TaskName }}</td>
-                     <td class="p-2">{{ tasks.TaskAddedOn }}</td>
-                     <td class="p-2">{{ tasks.TaskDeadline }}</td>
-                     <td class="p-2" id='is_completed_task'>{{ tasks.IsCompleted }}</td>
-                     <td><button class="black-button" data-task-id="{{ tasks.task_id }}" onclick="markAsComplete(this)" style='border: none; display:flex'><img src="{% static 'img/tick.png' %}" style='height:18px' id="togglePasswordImg"></button>
-                     <button class="red-button" data-task-id="{{ tasks.task_id }}" onclick="deleteTask(this)" style='border: none' id='bin'><img src="{% static 'img/bin.png' %}" style='height:18px' id="togglebinImg" onmouseover="onhoverImg(this)"></button></td>
+        <!-- Todo lists go here -->
+        <div class="mt-5">
+            <ul class="nav nav-tabs" id="myTab" role="tablist">
+                <li class="nav-item">
+                    <a class="nav-link" id="today-tab" data-toggle="tab" href="#today" role="tab"
+                        aria-controls="today" aria-selected="false">Today</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link active" id="pending-tab" data-toggle="tab" href="#pending" role="tab"
+                        aria-controls="pending" aria-selected="true">Pending</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" id="near-tab" data-toggle="tab" href="#near" role="tab"
+                        aria-controls="near" aria-selected="false">Close Deadline</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" id="completed-tab" data-toggle="tab" href="#completed" role="tab"
+                        aria-controls="completed" aria-selected="false">Completed</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" id="delayed-tab" data-toggle="tab" href="#delayed" role="tab"
+                        aria-controls="delayed" aria-selected="false">Delayed</a>
+                </li>
+            </ul>
+            <div class="tab-content" id="myTabContent">
+                <!-- Today Tasks -->
+                <div class="tab-pane fade" id="today" role="tabpanel" aria-labelledby="today-tab">
+                    <table class="table table-striped table-bordered mt-3" style="width:100%">
+                        <thead>
+                            <tr>
+                                <th>Task Name</th>
+                                <th>Added on</th>
+                                <th>Deadline</th>
+                                <th>Completed</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for task in Today %}
+                                <tr data-id="table_rows">
+                                    <td class="p-2 tasknamecross">{{ task.TaskName }}</td>
+                                    <td class="p-2">{{ task.TaskAddedOn }}</td>
+                                    <td class="p-2">{{ task.TaskDeadline }}</td>
+                                    <td class="p-2 is_completed_task" >{{ task.IsCompleted }}</td>
+                                    <td>
+                                        <button class="black-button" data-task-id="{{ task.task_id }}"
+                                            onclick="markAsComplete(this)" style='border: none; display:flex'><img
+                                                src="{% static 'img/tick.png' %}" style='height:18px'
+                                                id="togglePasswordImg"></button>
+                                        <button class="red-button" data-task-id="{{ task.task_id }}"
+                                            onclick="deleteTask(this)" style='border: none' id='bin'><img
+                                                src="{% static 'img/bin.png' %}" style='height:18px'
+                                                id="togglebinImg" onmouseover="onhoverImg(this)"></button>
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                <!-- Pending Tasks -->
+                <div class="tab-pane fade show active" id="pending" role="tabpanel"
+                    aria-labelledby="pending-tab">
+                    <table class="table table-striped table-bordered mt-3" style="width:100%">
+                        <thead>
+                            <tr>
+                                <th>Task Name</th>
+                                <th>Added on</th>
+                                <th>Deadline</th>
+                                <th>Completed</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for task in Pending %}
+                                <tr data-id="table_rows">
+                                    <td class="p-2 tasknamecross">{{ task.TaskName }}</td>
+                                    <td class="p-2">{{ task.TaskAddedOn }}</td>
+                                    <td class="p-2">{{ task.TaskDeadline }}</td>
+                                    <td class="p-2 is_completed_task" >{{ task.IsCompleted }}</td>
+                                    <td>
+                                        <button class="black-button" data-task-id="{{ task.task_id }}"
+                                            onclick="markAsComplete(this)" style='border: none; display:flex'><img
+                                                src="{% static 'img/tick.png' %}" style='height:18px'
+                                                id="togglePasswordImg"></button>
+                                        <button class="red-button" data-task-id="{{ task.task_id }}"
+                                            onclick="deleteTask(this)" style='border: none' id='bin'><img
+                                                src="{% static 'img/bin.png' %}" style='height:18px'
+                                                id="togglebinImg" onmouseover="onhoverImg(this)"></button>
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
 
-               </tr>
-               {% endfor %}
+                <!-- Close Deadline Tasks -->
+                <div class="tab-pane fade" id="near" role="tabpanel" aria-labelledby="near-tab">
+                    <table class="table table-striped table-bordered mt-3" style="width:100%">
+                        <thead>
+                            <tr>
+                                <th>Task Name</th>
+                                <th>Added on</th>
+                                <th>Deadline</th>
+                                <th>Completed</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for task in Near %}
+                                <tr data-id="table_rows">
+                                    <td class="p-2 tasknamecross">{{ task.TaskName }}</td>
+                                    <td class="p-2">{{ task.TaskAddedOn }}</td>
+                                    <td class="p-2">{{ task.TaskDeadline }}</td>
+                                    <td class="p-2 is_completed_task">{{ task.IsCompleted }}</td>
+                                    <td>
+                                        <button class="black-button" data-task-id="{{ task.task_id }}"
+                                            onclick="markAsComplete(this)" style='border: none; display:flex'><img
+                                                src="{% static 'img/tick.png' %}" style='height:18px'
+                                                id="togglePasswordImg"></button>
+                                        <button class="red-button" data-task-id="{{ task.task_id }}"
+                                            onclick="deleteTask(this)" style='border: none' id='bin'><img
+                                                src="{% static 'img/bin.png' %}" style='height:18px'
+                                                id="togglebinImg" onmouseover="onhoverImg(this)"></button>
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- Completed Tasks -->
+                <div class="tab-pane fade" id="completed" role="tabpanel" aria-labelledby="completed-tab">
+                    <table class="table table-striped table-bordered mt-3" style="width:100%">
+                        <thead>
+                            <tr>
+                                <th>Task Name</th>
+                                <th>Added on</th>
+                                <th>Deadline</th>
+                                <th>Completed</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for task in Completed %}
+                                <tr data-id="table_rows">
+                                    <td class="p-2 tasknamecross">{{ task.TaskName }}</td>
+                                    <td class="p-2">{{ task.TaskAddedOn }}</td>
+                                    <td class="p-2">{{ task.TaskDeadline }}</td>
+                                    <td class="p-2 is_completed_task" >{{ task.IsCompleted }}</td>
+                                    <td>
+                                        <button class="black-button" data-task-id="{{ task.task_id }}"
+                                            onclick="markAsComplete(this)" style='border: none; display:flex'><img
+                                                src="{% static 'img/tick.png' %}" style='height:18px'
+                                                id="togglePasswordImg"></button>
+                                        <button class="red-button" data-task-id="{{ task.task_id }}"
+                                            onclick="deleteTask(this)" style='border: none' id='bin'><img
+                                                src="{% static 'img/bin.png' %}" style='height:18px'
+                                                id="togglebinImg" onmouseover="onhoverImg(this)"></button>
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- Delayed Tasks -->
+                <div class="tab-pane fade" id="delayed" role="tabpanel" aria-labelledby="delayed-tab">
+                    <table class="table table-striped table-bordered mt-3" style="width:100%">
+                        <thead>
+                            <tr>
+                                <th>Task Name</th>
+                                <th>Added on</th>
+                                <th>Deadline</th>
+                                <th>Completed</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for task in Delayed %}
+                                <tr data-id="table_rows">
+                                    <td class="p-2 tasknamecross">{{ task.TaskName }}</td>
+                                    <td class="p-2">{{ task.TaskAddedOn }}</td>
+                                    <td class="p-2">{{ task.TaskDeadline }}</td>
+                                    <td class="p-2 is_completed_task" >{{ task.IsCompleted }}</td>
+                                    <td>
+                                        <button class="black-button" data-task-id="{{ task.task_id }}"
+                                            onclick="markAsComplete(this)" style='border: none; display:flex'><img
+                                                src="{% static 'img/tick.png' %}" style='height:18px'
+                                                id="togglePasswordImg"></button>
+                                        <button class="red-button" data-task-id="{{ task.task_id }}"
+                                            onclick="deleteTask(this)" style='border: none' id='bin'><img
+                                                src="{% static 'img/bin.png' %}" style='height:18px'
+                                                id="togglebinImg" onmouseover="onhoverImg(this)"></button>
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+
+            </div>
+        </div>
     </div>
 </div>
 </div>
@@ -164,17 +342,19 @@
         xhr.send(formData);
     }
 
-    document.addEventListener('DOMContentLoaded', function () {
-        var taskRows = document.querySelectorAll('[data-id="table_rows"]');
-        
-        taskRows.forEach(function (row) {
-            var isCompletedCell = row.querySelector('#is_completed_task');
-            var taskNameCell = row.querySelector('.tasknamecross');
-            
-            if (isCompletedCell.textContent.trim() === 'True') {
-                taskNameCell.innerHTML = '<del>' + taskNameCell.textContent + '</del>';
-            }
-        });
+document.addEventListener('DOMContentLoaded', function () {
+    var taskRows = document.querySelectorAll('[data-id="table_rows"]');
+    console.log('Yaha tak to aa hi raha hoga')
+    taskRows.forEach(function (row) {
+        console.log('Yaha hai abhi')
+        var isCompletedCell = row.querySelector('.is_completed_task'); // Use class selector
+        var taskNameCell = row.querySelector('.tasknamecross');
+        console.log('isCompletedCell.textContent:', isCompletedCell.textContent);
+        if (isCompletedCell.textContent.trim() === 'True') {
+            console.log('Inside if condition');
+            taskNameCell.innerHTML = '<del>' + taskNameCell.textContent + '</del>';
+        }
     });
+});
 </script>
 {% endblock %}

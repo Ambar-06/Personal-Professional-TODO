@@ -1,0 +1,25 @@
+{% extends 'index.html' %}
+
+{% load static %}
+
+{% block title %}ToDo{% endblock %}
+
+
+
+{% block body %}
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6 text-center">
+            <h1 class="display-4">Welcome to my ToDo App</h1>
+            <p class="lead">Manage your tasks efficiently. - by Ambar</p>
+            <div class="mt-4">
+                <a href="{% url 'login' %}" class="btn btn-primary btn-lg">Login</a>
+                <a href="{% url 'signup' %}" class="btn btn-success btn-lg">Signup</a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+{% block scripts %}
+<script src="https://code.iconify.design/1/1.0.7/iconify.min.js"></script>
+{% endblock %}

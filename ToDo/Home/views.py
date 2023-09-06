@@ -150,13 +150,37 @@ def home_f(request):
         print(request)
         if is_authenticated(request):
             if loginemail:
-                print(loginemail, 'INSIDE HOME')
                 userData = UserSignUpModel.objects.filter(SignUpEmail=loginemail).first()
-                print('YES')
-                print(userData)
                 userId = userData.UserUUID
+                todaydate = datetime.datetime.now()
+                todaydatestr = todaydate.strftime('%Y-%m-%d')
+                threedaysafter = todaydate + datetime.timedelta(days=3)
+                pending = []
+                completed = []
+                near = []
+                today = []
+                delayed = []
                 taskslist = TasksModel.objects.filter(UserUUID=userId).order_by('-task_id')
-            return render(request, 'home.html', {"TaskList" : taskslist})
+                for task in taskslist:
+                    taskDeadlinedate = task.TaskDeadline.strftime('%Y-%m-%d')
+                    print(datetime.datetime.strptime(taskDeadlinedate, "%Y-%m-%d"))
+                    if task.IsCompleted == "True":
+                        print(task.TaskName)
+                        completed.append(task)
+                    elif taskDeadlinedate == todaydatestr and task.IsCompleted != "True":
+                        today.append(task)
+                    elif datetime.datetime.strptime(taskDeadlinedate, "%Y-%m-%d") < datetime.datetime.strptime(todaydatestr, "%Y-%m-%d") and task.IsCompleted != "True":
+                        delayed.append(task)
+                    elif datetime.datetime.strptime(taskDeadlinedate, "%Y-%m-%d") < threedaysafter and task.IsCompleted != "True" and datetime.datetime.strptime(taskDeadlinedate, "%Y-%m-%d") != datetime.datetime.strptime(todaydatestr, "%Y-%m-%d"):
+                        near.append(task)
+                    elif task.IsCompleted != "True":
+                        pending.append(task)
+            print(pending, "*")
+            print(near)
+            print(completed)
+            print(delayed)
+            print(today)
+            return render(request, 'home.html', {"Pending" : pending, "Near" : near, "Completed" : completed, "Delayed" : delayed, "Today" : today})
         messages.error(request, 'Session Expired, Please login again to continue.')
         return redirect(reverse("login"))
     if request.method == 'POST':
@@ -215,3 +239,6 @@ def delete_task(request):
         task.delete()
         return JsonResponse({'message': 'Task deleted'})
     return JsonResponse({'error': 'Invalid request method'})
+
+def index(request):
+    return render(request, 'index_home.html')
