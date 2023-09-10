@@ -42,23 +42,43 @@
             <ul class="nav nav-tabs" id="myTab" role="tablist">
                 <li class="nav-item">
                     <a class="nav-link" id="today-tab" data-toggle="tab" href="#today" role="tab"
-                        aria-controls="today" aria-selected="false">Today</a>
+                        aria-controls="today" aria-selected="false">Today 
+                        {% if Today %}
+                        <span style='background-color:red; border-radius:50%; padding: 3px 5px; color:white;font-size: 10px;'>{{ Today|length }}</span>
+                        {% endif %}
+                    </a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link active" id="pending-tab" data-toggle="tab" href="#pending" role="tab"
-                        aria-controls="pending" aria-selected="true">Pending</a>
+                        aria-controls="pending" aria-selected="true">Pending
+                        {% if Pending %}
+                        <span style='background-color:green; border-radius:50%; padding: 3px 5px; color:white;font-size: 10px;'>{{ Pending|length }}</span>
+                        {% endif %}
+                    </a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link" id="near-tab" data-toggle="tab" href="#near" role="tab"
-                        aria-controls="near" aria-selected="false">Close Deadline</a>
+                        aria-controls="near" aria-selected="false">Close Deadline
+                        {% if Near %}
+                        <span style='background-color:orange; border-radius:50%; padding: 3px 5px; color:white;font-size: 10px;'>{{ Near|length }}</span>
+                        {% endif %}
+                    </a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link" id="completed-tab" data-toggle="tab" href="#completed" role="tab"
-                        aria-controls="completed" aria-selected="false">Completed</a>
+                        aria-controls="completed" aria-selected="false">Completed
+                        {% if Completed %}
+                        <span style='background-color:grey; border-radius:50%; padding: 3px 5px; color:white;font-size: 10px;'>{{ Completed|length }}</span>
+                        {% endif %}
+                    </a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link" id="delayed-tab" data-toggle="tab" href="#delayed" role="tab"
-                        aria-controls="delayed" aria-selected="false">Delayed</a>
+                        aria-controls="delayed" aria-selected="false">Delayed
+                        {% if Delayed %}
+                        <span style='background-color:#8b0000; border-radius:50%; padding: 3px 5px; color:white;font-size: 10px;'>{{ Delayed|length }}</span>
+                        {% endif %}
+                    </a>
                 </li>
             </ul>
             <div class="tab-content" id="myTabContent">
