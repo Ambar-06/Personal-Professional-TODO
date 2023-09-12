@@ -240,5 +240,16 @@ def delete_task(request):
         return JsonResponse({'message': 'Task deleted'})
     return JsonResponse({'error': 'Invalid request method'})
 
+@csrf_exempt
+def edit_task(request):
+    if request.method == 'POST':
+        task_id = request.POST.get('task_id')
+        print(request.POST)
+        print(task_id)
+        task = TasksModel.objects.get(task_id=task_id)
+        task.delete()
+        return JsonResponse({'message': 'Task deleted'})
+    return JsonResponse({'error': 'Invalid request method'})
+
 def index(request):
     return render(request, 'index_home.html')

@@ -103,7 +103,7 @@
                                     <td class="p-2">{{ task.TaskDeadline }}</td>
                                     <td class="p-2 is_completed_task" >{{ task.IsCompleted }}</td>
                                     <td class="p-2" ><button class="black-button" data-task-id="{{ task.task_id }}"
-                                        onclick="edit(this)" style='border: none; display:flex'><img
+                                         data-target="#updateTaskModal" data-toggle="modal" style='border: none; display:flex'><img
                                             src="{% static 'img/edit.svg' %}" style='height:18px'
                                             id=""></button></td>
                                     <td>
@@ -143,7 +143,7 @@
                                     <td class="p-2">{{ task.TaskDeadline }}</td>
                                     <td class="p-2 is_completed_task" >{{ task.IsCompleted }}</td>
                                     <td class="p-2" ><button class="black-button" data-task-id="{{ task.task_id }}"
-                                        onclick="edit(this)" style='border: none; display:flex'><img
+                                         data-target="#updateTaskModal" data-toggle="modal" style='border: none; display:flex'><img
                                             src="{% static 'img/edit.svg' %}" style='height:18px'
                                             id=""></button></td>
                                     <td>
@@ -183,7 +183,7 @@
                                     <td class="p-2">{{ task.TaskDeadline }}</td>
                                     <td class="p-2 is_completed_task">{{ task.IsCompleted }}</td>
                                     <td class="p-2" ><button class="black-button" data-task-id="{{ task.task_id }}"
-                                        onclick="edit(this)" style='border: none; display:flex'><img
+                                         data-target="#updateTaskModal" data-toggle="modal" style='border: none; display:flex'><img
                                             src="{% static 'img/edit.svg' %}" style='height:18px'
                                             id=""></button></td>
                                     <td>
@@ -258,9 +258,7 @@
                                     <td class="p-2">{{ task.TaskDeadline }}</td>
                                     <td class="p-2 is_completed_task" >{{ task.IsCompleted }}</td>
                                     <td class="p-2" ><button class="black-button" data-task-id="{{ task.task_id }}"
-                                        onclick="edit(this)" style='border: none; display:flex'><img
-                                            src="{% static 'img/edit.svg' %}" style='height:18px'
-                                            id=""></button></td>
+                                         data-target="#updateTaskModal" data-toggle="modal" onclick='prepopulate(JSON.stringify({{ task }}))' style='border: none; display:flex'><img src="{% static 'img/edit.svg' %}" style='height:18px'></button></td>
                                     <td>
                                         <button class="black-button" data-task-id="{{ task.task_id }}"
                                             onclick="markAsComplete(this)" style='border: none; display:flex'><img
@@ -314,6 +312,39 @@
     </div>
 </div>
 </form>
+
+<!-- Update Task Modal -->
+<form class="task-form" method="POST" action="{% url 'home' %}">
+    {% csrf_token %}
+ <div class="modal fade" id="updateTaskModal" tabindex="-1" role="dialog" aria-labelledby="updateTaskModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="updateTaskModalLabel">Update Task</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <!-- TaskName input -->
+                <div class="form-group">
+                    <label for="taskName">Task Name</label>
+                    <input type="text" class="form-control" id="taskName" name='TaskName' placeholder="Enter Task Name" value='{{ task.TaskName }}'>
+                </div>
+                <!-- TaskDeadline input -->
+                <div class="form-group">
+                    <label for="taskDeadline">Task Deadline</label>
+                    <input type="date" class="form-control" id="taskDeadline" name='TaskDeadline'>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <button type="submit" class="btn btn-primary">Update Task</button>
+            </div>
+        </div>
+    </div>
+</div>
+</form>
 {% endblock %}
 
 {% block scripts %}
@@ -326,51 +357,27 @@
 <script src="{%static 'js/home.js' %}"></script>
 <script>
     function markAsComplete(button) {
-        // Get the task ID from the data attribute of the button
         var taskId = button.getAttribute('data-task-id');
         
-        // Create a URL-encoded form data string
         var formData = 'task_id=' + encodeURIComponent(taskId);
     
-        // Create a new XMLHttpRequest object
         var xhr = new XMLHttpRequest();
-    
-        // Configure the request
         xhr.open('POST', '/mark_as_complete/', true);
         xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
     
-        // Define the callback function for when the request is complete
         xhr.onload = function() {
             if (xhr.status === 200) {
-                // If the request is successful, reload the page
                 location.reload();
             } else {
-                // Handle errors here, e.g., display an error message
                 console.error('An error occurred:', xhr.status, xhr.statusText);
             }
         };
-    
-            // Send the request with the form data
         xhr.send(formData);
-
-        function edit(button) {
-            var taskId = button.getAttribute('data-task-id');
-            
-            var formData = 'task_id=' + encodeURIComponent(taskId);
-        
-            var xhr = new XMLHttpRequest();
-        
-            xhr.open('POST', '/edit_task/', true);
-            xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
-            xhr.onload = function() {
-                if (xhr.status === 200) {
-                    location.reload();
-                } else {
-                    console.error('An error occurred:', xhr.status, xhr.statusText);
-                }
-            };
-            xhr.send(formData);
     }
+function prepopulate(arr) {
+    var taskObject = JSON.parse(arr);
+    console.log(taskObject);
+}
     function deleteTask(button) {
         var taskId = button.getAttribute('data-task-id');
 
@@ -393,9 +400,7 @@
 
 document.addEventListener('DOMContentLoaded', function () {
     var taskRows = document.querySelectorAll('[data-id="table_rows"]');
-    console.log('Yaha tak to aa hi raha hoga')
     taskRows.forEach(function (row) {
-        console.log('Yaha hai abhi')
         var isCompletedCell = row.querySelector('.is_completed_task'); // Use class selector
         var taskNameCell = row.querySelector('.tasknamecross');
         console.log('isCompletedCell.textContent:', isCompletedCell.textContent);
