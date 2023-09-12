@@ -91,6 +91,7 @@
                                 <th>Added on</th>
                                 <th>Deadline</th>
                                 <th>Completed</th>
+                                <th>Update</th>
                                 <th>Action</th>
                             </tr>
                         </thead>
@@ -101,6 +102,10 @@
                                     <td class="p-2">{{ task.TaskAddedOn }}</td>
                                     <td class="p-2">{{ task.TaskDeadline }}</td>
                                     <td class="p-2 is_completed_task" >{{ task.IsCompleted }}</td>
+                                    <td class="p-2" ><button class="black-button" data-task-id="{{ task.task_id }}"
+                                        onclick="edit(this)" style='border: none; display:flex'><img
+                                            src="{% static 'img/edit.svg' %}" style='height:18px'
+                                            id=""></button></td>
                                     <td>
                                         <button class="black-button" data-task-id="{{ task.task_id }}"
                                             onclick="markAsComplete(this)" style='border: none; display:flex'><img
@@ -126,6 +131,7 @@
                                 <th>Added on</th>
                                 <th>Deadline</th>
                                 <th>Completed</th>
+                                <th>Update</th>
                                 <th>Action</th>
                             </tr>
                         </thead>
@@ -136,6 +142,10 @@
                                     <td class="p-2">{{ task.TaskAddedOn }}</td>
                                     <td class="p-2">{{ task.TaskDeadline }}</td>
                                     <td class="p-2 is_completed_task" >{{ task.IsCompleted }}</td>
+                                    <td class="p-2" ><button class="black-button" data-task-id="{{ task.task_id }}"
+                                        onclick="edit(this)" style='border: none; display:flex'><img
+                                            src="{% static 'img/edit.svg' %}" style='height:18px'
+                                            id=""></button></td>
                                     <td>
                                         <button class="black-button" data-task-id="{{ task.task_id }}"
                                             onclick="markAsComplete(this)" style='border: none; display:flex'><img
@@ -161,6 +171,7 @@
                                 <th>Added on</th>
                                 <th>Deadline</th>
                                 <th>Completed</th>
+                                <th>Update</th>
                                 <th>Action</th>
                             </tr>
                         </thead>
@@ -171,6 +182,10 @@
                                     <td class="p-2">{{ task.TaskAddedOn }}</td>
                                     <td class="p-2">{{ task.TaskDeadline }}</td>
                                     <td class="p-2 is_completed_task">{{ task.IsCompleted }}</td>
+                                    <td class="p-2" ><button class="black-button" data-task-id="{{ task.task_id }}"
+                                        onclick="edit(this)" style='border: none; display:flex'><img
+                                            src="{% static 'img/edit.svg' %}" style='height:18px'
+                                            id=""></button></td>
                                     <td>
                                         <button class="black-button" data-task-id="{{ task.task_id }}"
                                             onclick="markAsComplete(this)" style='border: none; display:flex'><img
@@ -231,6 +246,7 @@
                                 <th>Added on</th>
                                 <th>Deadline</th>
                                 <th>Completed</th>
+                                <th>Update</th>
                                 <th>Action</th>
                             </tr>
                         </thead>
@@ -241,6 +257,10 @@
                                     <td class="p-2">{{ task.TaskAddedOn }}</td>
                                     <td class="p-2">{{ task.TaskDeadline }}</td>
                                     <td class="p-2 is_completed_task" >{{ task.IsCompleted }}</td>
+                                    <td class="p-2" ><button class="black-button" data-task-id="{{ task.task_id }}"
+                                        onclick="edit(this)" style='border: none; display:flex'><img
+                                            src="{% static 'img/edit.svg' %}" style='height:18px'
+                                            id=""></button></td>
                                     <td>
                                         <button class="black-button" data-task-id="{{ task.task_id }}"
                                             onclick="markAsComplete(this)" style='border: none; display:flex'><img
