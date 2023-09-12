@@ -352,33 +352,42 @@
     
             // Send the request with the form data
         xhr.send(formData);
+
+        function edit(button) {
+            var taskId = button.getAttribute('data-task-id');
+            
+            var formData = 'task_id=' + encodeURIComponent(taskId);
+        
+            var xhr = new XMLHttpRequest();
+        
+            xhr.open('POST', '/edit_task/', true);
+            xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+            xhr.onload = function() {
+                if (xhr.status === 200) {
+                    location.reload();
+                } else {
+                    console.error('An error occurred:', xhr.status, xhr.statusText);
+                }
+            };
+            xhr.send(formData);
     }
     function deleteTask(button) {
-        // Get the task ID from the data attribute of the button
         var taskId = button.getAttribute('data-task-id');
 
-        // Create a URL-encoded form data string
         var formData = 'task_id=' + encodeURIComponent(taskId);
     
-        // Create a new XMLHttpRequest object
         var xhr = new XMLHttpRequest();
     
-        // Configure the request
         xhr.open('POST', '/delete_task/', true);
         xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
     
-        // Define the callback function for when the request is complete
         xhr.onload = function() {
             if (xhr.status === 200) {
-                // If the request is successful, reload the page
                 location.reload();
             } else {
-                // Handle errors here, e.g., display an error message
                 console.error('An error occurred:', xhr.status, xhr.statusText);
             }
         };
-    
-        // Send the request with the Form data
         xhr.send(formData);
     }
 
