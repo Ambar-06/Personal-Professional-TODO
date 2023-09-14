@@ -102,8 +102,8 @@
                                     <td class="p-2">{{ task.TaskAddedOn }}</td>
                                     <td class="p-2">{{ task.TaskDeadline }}</td>
                                     <td class="p-2 is_completed_task" >{{ task.IsCompleted }}</td>
-                                    <td class="p-2" ><button class="black-button" data-task-id="{{ task.task_id }}"
-                                         data-target="#updateTaskModal" data-toggle="modal" style='border: none; display:flex'><img
+                                    <td class="p-2" ><button class="black-button" data-task-id="{{ task.task_id }}-today"
+                                         data-target="#updateTaskModal" data-toggle="modal" onclick="prepopulate(this)" style='border: none; display:flex'><img
                                             src="{% static 'img/edit.svg' %}" style='height:18px'
                                             id=""></button></td>
                                     <td>
@@ -142,8 +142,8 @@
                                     <td class="p-2">{{ task.TaskAddedOn }}</td>
                                     <td class="p-2">{{ task.TaskDeadline }}</td>
                                     <td class="p-2 is_completed_task" >{{ task.IsCompleted }}</td>
-                                    <td class="p-2" ><button class="black-button" data-task-id="{{ task.task_id }}"
-                                         data-target="#updateTaskModal" data-toggle="modal" style='border: none; display:flex'><img
+                                    <td class="p-2" ><button class="black-button" data-task-id="{{ task.task_id }}-pending"
+                                         data-target="#updateTaskModal" data-toggle="modal" onclick="prepopulate(this)" style='border: none; display:flex'><img
                                             src="{% static 'img/edit.svg' %}" style='height:18px'
                                             id=""></button></td>
                                     <td>
@@ -182,8 +182,8 @@
                                     <td class="p-2">{{ task.TaskAddedOn }}</td>
                                     <td class="p-2">{{ task.TaskDeadline }}</td>
                                     <td class="p-2 is_completed_task">{{ task.IsCompleted }}</td>
-                                    <td class="p-2" ><button class="black-button" data-task-id="{{ task.task_id }}"
-                                         data-target="#updateTaskModal" data-toggle="modal" style='border: none; display:flex'><img
+                                    <td class="p-2" ><button class="black-button" data-task-id="{{ task.task_id }}-near"
+                                         data-target="#updateTaskModal" data-toggle="modal" onclick="prepopulate(this)" style='border: none; display:flex'><img
                                             src="{% static 'img/edit.svg' %}" style='height:18px'
                                             id=""></button></td>
                                     <td>
@@ -257,8 +257,8 @@
                                     <td class="p-2">{{ task.TaskAddedOn }}</td>
                                     <td class="p-2">{{ task.TaskDeadline }}</td>
                                     <td class="p-2 is_completed_task" >{{ task.IsCompleted }}</td>
-                                    <td class="p-2" ><button class="black-button" data-task-id="{{ task.task_id }}"
-                                         data-target="#updateTaskModal" data-toggle="modal" onclick='prepopulate(JSON.stringify({{ task }}))' style='border: none; display:flex'><img src="{% static 'img/edit.svg' %}" style='height:18px'></button></td>
+                                    <td class="p-2" ><button class="black-button" data-task-id="{{ task.task_id }}-delayed"
+                                         data-target="#updateTaskModal" data-toggle="modal" onclick="prepopulate(this)" style='border: none; display:flex'><img src="{% static 'img/edit.svg' %}" style='height:18px'></button></td>
                                     <td>
                                         <button class="black-button" data-task-id="{{ task.task_id }}"
                                             onclick="markAsComplete(this)" style='border: none; display:flex'><img
@@ -374,9 +374,33 @@
         };
         xhr.send(formData);
     }
-function prepopulate(arr) {
-    var taskObject = JSON.parse(arr);
-    console.log(taskObject);
+function prepopulate(button) {
+    var taskId = button.getAttribute('data-task-id').split('-')[0];
+    var tasktype = button.getAttribute('data-task-id').split('-')[button.getAttribute('data-task-id').split('-').length - 1];
+    console.log(taskId);
+    console.log(tasktype);
+    if(tasktype === 'delayed'){
+        console.log('Delayed')
+        {% for task in Delayed %}
+        {% endfor %}
+    }
+    else if(tasktype === 'pending'){
+        console.log('Pending')
+        {% for task in Pending %}
+        {% endfor %}
+    }
+    else if(tasktype === 'near'){
+        console.log('Near')
+        {% for task in Near %}
+        {% endfor %}
+    }
+    else if(tasktype === 'today'){
+        console.log('Today')
+        {% for task in Today %}
+        {% endfor %}
+    }
+    
+
     console.log('Working till here')
 }
     function deleteTask(button) {
