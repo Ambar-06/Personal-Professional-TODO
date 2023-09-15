@@ -204,10 +204,10 @@ def home_f(request):
             )
         taskData.save()
         return HttpResponseRedirect(request.path_info)
-        print('SAVED')
-        messages.success(request, 'Task has been added to your tasks list.')
-        # taskslist = TasksModel.objects.filter(UserUUID=).order_by('-task_id')
-        return render(request, 'home.html', {"TaskList" : taskslist})
+        # print('SAVED')
+        # messages.success(request, 'Task has been added to your tasks list.')
+        # # taskslist = TasksModel.objects.filter(UserUUID=).order_by('-task_id')
+        # return render(request, 'home.html', {"TaskList" : taskslist})
 
 
 def logout_f(request):

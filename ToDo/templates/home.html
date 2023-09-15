@@ -329,12 +329,12 @@
                 <!-- TaskName input -->
                 <div class="form-group">
                     <label for="taskName">Task Name</label>
-                    <input type="text" class="form-control" id="taskName" name='TaskName' placeholder="Enter Task Name" value='{{ task.TaskName }}'>
+                    <input type="text" class="form-control" id="updatetaskName" name='TaskName' placeholder="Enter Task Name" value='{{ task.TaskName }}'>
                 </div>
                 <!-- TaskDeadline input -->
                 <div class="form-group">
                     <label for="taskDeadline">Task Deadline</label>
-                    <input type="date" class="form-control" id="taskDeadline" name='TaskDeadline'>
+                    <input type="date" class="form-control" id="updatetaskDeadline" name='TaskDeadline'>
                 </div>
             </div>
             <div class="modal-footer">
@@ -382,25 +382,62 @@ function prepopulate(button) {
     if(tasktype === 'delayed'){
         console.log('Delayed')
         {% for task in Delayed %}
+        console.log('YES')
+        let task_task_id = {{ task.task_id }};
         {% endfor %}
     }
     else if(tasktype === 'pending'){
         console.log('Pending')
         {% for task in Pending %}
+        console.log('YES')
+        let task_task_id = {{ task.task_id }};
+        console.log(task_task_id)
+        console.log(taskId)
+        console.log(task_task_id==taskId)
+        if(task_task_id==taskId){
+            console.log('{{ task.TaskDeadline|date:"Y-m-d" }}')
+            let taskNameField = document.getElementById('updatetaskName');
+            taskNameField.value = '{{ task.TaskName }}';
+            let taskdeadline = document.getElementById('updatetaskDeadline');
+            taskdeadline.value = '{{ task.TaskDeadline|date:"Y-m-d" }}';
+        };
         {% endfor %}
     }
     else if(tasktype === 'near'){
         console.log('Near')
         {% for task in Near %}
+        console.log('YES')
+        let task_task_id = {{ task.task_id }};
+        console.log(task_task_id)
+        console.log(taskId)
+        console.log(task_task_id==taskId)
+        if(task_task_id==taskId){
+            console.log('{{ task.TaskDeadline|date:"Y-m-d" }}')
+            let taskNameField = document.getElementById('updatetaskName');
+            taskNameField.value = '{{ task.TaskName }}';
+            let taskdeadline = document.getElementById('updatetaskDeadline');
+            taskdeadline.value = '{{ task.TaskDeadline|date:"Y-m-d" }}';
+        };
         {% endfor %}
     }
     else if(tasktype === 'today'){
         console.log('Today')
         {% for task in Today %}
+        console.log('YES')
+        let task_task_id = {{ task.task_id }};
+        console.log(task_task_id)
+        console.log(taskId)
+        console.log(task_task_id==taskId)
+        if(task_task_id==taskId){
+            console.log('{{ task.TaskDeadline|date:"Y-m-d" }}')
+            let taskNameField = document.getElementById('updatetaskName');
+            taskNameField.value = '{{ task.TaskName }}';
+            let taskdeadline = document.getElementById('updatetaskDeadline');
+            taskdeadline.value = '{{ task.TaskDeadline|date:"Y-m-d" }}';
+        };
         {% endfor %}
     }
     
-
     console.log('Working till here')
 }
     function deleteTask(button) {
