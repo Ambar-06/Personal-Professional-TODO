@@ -10,6 +10,7 @@ from rest_framework import status
 from pydantic import ValidationError
 from django.contrib import messages
 from django.urls import reverse
+from django.core import serializers
 from django.views.decorators.csrf import csrf_exempt
 from django.shortcuts import get_object_or_404
 import datetime
@@ -180,7 +181,12 @@ def home_f(request):
             print(completed)
             print(delayed)
             print(today)
-            return render(request, 'home.html', {"Pending" : pending, "Near" : near, "Completed" : completed, "Delayed" : delayed, "Today" : today})
+            today_json =  serializers.serialize('json', today)
+            pending_json =  serializers.serialize('json', pending)
+            near_json =  serializers.serialize('json', near)
+            completed_json =  serializers.serialize('json', completed)
+            delayed_json =  serializers.serialize('json', delayed)
+            return render(request, 'home.html', {"Pending" : pending, "Near" : near, "Completed" : completed, "Delayed" : delayed, "Today" : today, "PendingJSON" : pending_json, "NearJSON" : near_json, "CompletedJSON" : completed_json, "DelayedJSON" : delayed_json, "TodayJSON" : today_json})
         messages.error(request, 'Session Expired, Please login again to continue.')
         return redirect(reverse("login"))
     if request.method == 'POST':

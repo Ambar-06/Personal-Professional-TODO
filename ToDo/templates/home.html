@@ -373,18 +373,18 @@
             }
         };
         xhr.send(formData);
-    }
+    };
+
 function prepopulate(button) {
     var taskId = button.getAttribute('data-task-id').split('-')[0];
     var tasktype = button.getAttribute('data-task-id').split('-')[button.getAttribute('data-task-id').split('-').length - 1];
     console.log(taskId);
     console.log(tasktype);
     if(tasktype === 'delayed'){
-        console.log('Delayed')
-        {% for task in Delayed %}
-        console.log('YES')
-        let task_task_id = {{ task.task_id }};
-        {% endfor %}
+        var DelayedTasks = {{ DelayedJSON|safe }};
+        console.log(DelayedTasks)
+        console.log(DelayedTasks[0].fields, '*****')
+         
     }
     else if(tasktype === 'pending'){
         console.log('Pending')
