@@ -176,11 +176,6 @@ def home_f(request):
                         near.append(task)
                     elif task.IsCompleted != "True":
                         pending.append(task)
-            print(pending, "*")
-            print(near)
-            print(completed)
-            print(delayed)
-            print(today)
             today_json =  serializers.serialize('json', today)
             pending_json =  serializers.serialize('json', pending)
             near_json =  serializers.serialize('json', near)
