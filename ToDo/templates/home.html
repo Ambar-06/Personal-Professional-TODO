@@ -378,65 +378,49 @@
 function prepopulate(button) {
     var taskId = button.getAttribute('data-task-id').split('-')[0];
     var tasktype = button.getAttribute('data-task-id').split('-')[button.getAttribute('data-task-id').split('-').length - 1];
-    console.log(taskId);
-    console.log(tasktype);
     if(tasktype === 'delayed'){
         var DelayedTasks = {{ DelayedJSON|safe }};
-        console.log(DelayedTasks)
-        console.log(DelayedTasks[0].fields, '*****')
-         
+        for(items in DelayedTasks){
+            if(taskId===String(DelayedTasks[items].pk)){
+                let taskNameField = document.getElementById('updatetaskName');
+                taskNameField.value = DelayedTasks[items].fields['TaskName'];
+                let taskdeadline = document.getElementById('updatetaskDeadline');
+                taskdeadline.value = DelayedTasks[items].fields['TaskDeadline'].split('T')[0];
+        }
+        }
     }
     else if(tasktype === 'pending'){
-        console.log('Pending')
-        {% for task in Pending %}
-        console.log('YES')
-        let task_task_id = {{ task.task_id }};
-        console.log(task_task_id)
-        console.log(taskId)
-        console.log(task_task_id==taskId)
-        if(task_task_id==taskId){
-            console.log('{{ task.TaskDeadline|date:"Y-m-d" }}')
-            let taskNameField = document.getElementById('updatetaskName');
-            taskNameField.value = '{{ task.TaskName }}';
-            let taskdeadline = document.getElementById('updatetaskDeadline');
-            taskdeadline.value = '{{ task.TaskDeadline|date:"Y-m-d" }}';
-        };
-        {% endfor %}
-    }
+        var PendingTasks = {{ PendingJSON|safe }};
+        for(items in PendingTasks){
+            if(taskId===String(PendingTasks[items].pk)){
+                let taskNameField = document.getElementById('updatetaskName');
+                taskNameField.value = PendingTasks[items].fields['TaskName'];
+                let taskdeadline = document.getElementById('updatetaskDeadline');
+                taskdeadline.value = PendingTasks[items].fields['TaskDeadline'].split('T')[0];
+        }
+        }
+}
     else if(tasktype === 'near'){
-        console.log('Near')
-        {% for task in Near %}
-        console.log('YES')
-        let task_task_id = {{ task.task_id }};
-        console.log(task_task_id)
-        console.log(taskId)
-        console.log(task_task_id==taskId)
-        if(task_task_id==taskId){
-            console.log('{{ task.TaskDeadline|date:"Y-m-d" }}')
-            let taskNameField = document.getElementById('updatetaskName');
-            taskNameField.value = '{{ task.TaskName }}';
-            let taskdeadline = document.getElementById('updatetaskDeadline');
-            taskdeadline.value = '{{ task.TaskDeadline|date:"Y-m-d" }}';
-        };
-        {% endfor %}
-    }
+        var NearTasks = {{ NearJSON|safe }};
+        for(items in NearTasks){
+            if(taskId===String(NearTasks[items].pk)){
+                let taskNameField = document.getElementById('updatetaskName');
+                taskNameField.value = NearTasks[items].fields['TaskName'];
+                let taskdeadline = document.getElementById('updatetaskDeadline');
+                taskdeadline.value = NearTasks[items].fields['TaskDeadline'].split('T')[0];
+        }
+        }
+}
     else if(tasktype === 'today'){
-        console.log('Today')
-        {% for task in Today %}
-        console.log('YES')
-        let task_task_id = {{ task.task_id }};
-        console.log(task_task_id)
-        console.log(taskId)
-        console.log(task_task_id==taskId)
-        if(task_task_id==taskId){
-            console.log('{{ task.TaskDeadline|date:"Y-m-d" }}')
-            let taskNameField = document.getElementById('updatetaskName');
-            taskNameField.value = '{{ task.TaskName }}';
-            let taskdeadline = document.getElementById('updatetaskDeadline');
-            taskdeadline.value = '{{ task.TaskDeadline|date:"Y-m-d" }}';
-        };
-        {% endfor %}
-    }
+        var TodayTasks = {{ TodayJSON|safe }};
+        for(items in TodayTasks){
+            if(taskId===String(TodayTasks[items].pk)){
+                let taskNameField = document.getElementById('updatetaskName');
+                taskNameField.value = TodayTasks[items].fields['TaskName'];
+                let taskdeadline = document.getElementById('updatetaskDeadline');
+                taskdeadline.value = TodayTasks[items].fields['TaskDeadline'].split('T')[0];
+        }
+        }
     
     console.log('Working till here')
 }
@@ -459,6 +443,7 @@ function prepopulate(button) {
         };
         xhr.send(formData);
     }
+}
 
 document.addEventListener('DOMContentLoaded', function () {
     var taskRows = document.querySelectorAll('[data-id="table_rows"]');
