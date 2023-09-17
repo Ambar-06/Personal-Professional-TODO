@@ -185,7 +185,6 @@ def home_f(request):
         messages.error(request, 'Session Expired, Please login again to continue.')
         return redirect(reverse("login"))
     if request.method == 'POST':
-        print('POST')
         req_data = {
             "TaskName" : request.POST.get('TaskName'),
             "TaskDeadline" : request.POST.get('TaskDeadline')
