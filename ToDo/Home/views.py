@@ -184,7 +184,7 @@ def home_f(request):
             return render(request, 'home.html', {"Pending" : pending, "Near" : near, "Completed" : completed, "Delayed" : delayed, "Today" : today, "PendingJSON" : pending_json, "NearJSON" : near_json, "CompletedJSON" : completed_json, "DelayedJSON" : delayed_json, "TodayJSON" : today_json})
         messages.error(request, 'Session Expired, Please login again to continue.')
         return redirect(reverse("login"))
-    if request.method == 'POST':
+    if request.method == 'POST' and request.POST.get('methodtype') == 'post':
         req_data = {
             "TaskName" : request.POST.get('TaskName'),
             "TaskDeadline" : request.POST.get('TaskDeadline')
@@ -204,10 +204,26 @@ def home_f(request):
             )
         taskData.save()
         return HttpResponseRedirect(request.path_info)
-        # print('SAVED')
-        # messages.success(request, 'Task has been added to your tasks list.')
-        # # taskslist = TasksModel.objects.filter(UserUUID=).order_by('-task_id')
-        # return render(request, 'home.html', {"TaskList" : taskslist})
+    if request.method == 'POST' and request.POST.get('methodtype') == 'put':
+        req_data = {
+            "TaskName" : request.POST.get('UpdateTaskName'),
+            "TaskDeadline" : request.POST.get('UpdateTaskDeadline')
+        }
+        try:
+            validated_data = TaskDataSchema(**req_data)
+        except ValidationError as e:
+            messages.error(request, f'{e.errors()}')
+        
+        try:
+            taskData = TasksModel.objects.get(task_id=request.POST.get('UpdateTaskId'))
+        except TasksModel.DoesNotExist:
+            pass
+        else:
+            taskData.TaskName = validated_data.TaskName
+            taskData.TaskDeadline = validated_data.TaskDeadline
+            taskData.save()
+        return HttpResponseRedirect(request.path_info)
+
 
 
 def logout_f(request):

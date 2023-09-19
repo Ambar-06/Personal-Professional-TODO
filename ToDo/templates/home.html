@@ -303,6 +303,7 @@
                     <label for="taskDeadline">Task Deadline</label>
                     <input type="date" class="form-control" id="taskDeadline" name='TaskDeadline'>
                 </div>
+                <input type="hidden" class="form-control" id="methodtype" name='methodtype' value='post'>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
@@ -329,13 +330,15 @@
                 <!-- TaskName input -->
                 <div class="form-group">
                     <label for="taskName">Task Name</label>
-                    <input type="text" class="form-control" id="updatetaskName" name='TaskName' placeholder="Enter Task Name" value='{{ task.TaskName }}'>
+                    <input type="text" class="form-control" id="updatetaskName" name='UpdateTaskName' placeholder="Enter Task Name" value='{{ task.TaskName }}'>
                 </div>
                 <!-- TaskDeadline input -->
                 <div class="form-group">
                     <label for="taskDeadline">Task Deadline</label>
-                    <input type="date" class="form-control" id="updatetaskDeadline" name='TaskDeadline'>
+                    <input type="date" class="form-control" id="updatetaskDeadline" name='UpdateTaskDeadline'>
                 </div>
+                <input type="hidden" class="form-control" id="updatetaskId" name='UpdateTaskId' value='{{ task.task_id }}'>
+                <input type="hidden" class="form-control" id="methodtype" name='methodtype' value='put'>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
@@ -384,6 +387,8 @@ function prepopulate(button) {
             if(taskId===String(DelayedTasks[items].pk)){
                 let taskNameField = document.getElementById('updatetaskName');
                 taskNameField.value = DelayedTasks[items].fields['TaskName'];
+                let taskIdField = document.getElementById('updatetaskId');
+                taskIdField.value = taskId;
                 let taskdeadline = document.getElementById('updatetaskDeadline');
                 taskdeadline.value = DelayedTasks[items].fields['TaskDeadline'].split('T')[0];
         }
@@ -395,6 +400,8 @@ function prepopulate(button) {
             if(taskId===String(PendingTasks[items].pk)){
                 let taskNameField = document.getElementById('updatetaskName');
                 taskNameField.value = PendingTasks[items].fields['TaskName'];
+                let taskIdField = document.getElementById('updatetaskId');
+                taskIdField.value = taskId;
                 let taskdeadline = document.getElementById('updatetaskDeadline');
                 taskdeadline.value = PendingTasks[items].fields['TaskDeadline'].split('T')[0];
         }
@@ -406,6 +413,8 @@ function prepopulate(button) {
             if(taskId===String(NearTasks[items].pk)){
                 let taskNameField = document.getElementById('updatetaskName');
                 taskNameField.value = NearTasks[items].fields['TaskName'];
+                let taskIdField = document.getElementById('updatetaskId');
+                taskIdField.value = taskId;
                 let taskdeadline = document.getElementById('updatetaskDeadline');
                 taskdeadline.value = NearTasks[items].fields['TaskDeadline'].split('T')[0];
         }
@@ -417,12 +426,15 @@ function prepopulate(button) {
             if(taskId===String(TodayTasks[items].pk)){
                 let taskNameField = document.getElementById('updatetaskName');
                 taskNameField.value = TodayTasks[items].fields['TaskName'];
+                let taskIdField = document.getElementById('updatetaskId');
+                taskIdField.value = taskId;
                 let taskdeadline = document.getElementById('updatetaskDeadline');
                 taskdeadline.value = TodayTasks[items].fields['TaskDeadline'].split('T')[0];
         }
         }
     
     console.log('Working till here')
+}
 }
     function deleteTask(button) {
         var taskId = button.getAttribute('data-task-id');
@@ -443,7 +455,7 @@ function prepopulate(button) {
         };
         xhr.send(formData);
     }
-}
+
 
 document.addEventListener('DOMContentLoaded', function () {
     var taskRows = document.querySelectorAll('[data-id="table_rows"]');
