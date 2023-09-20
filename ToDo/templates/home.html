@@ -432,8 +432,6 @@ function prepopulate(button) {
                 taskdeadline.value = TodayTasks[items].fields['TaskDeadline'].split('T')[0];
         }
         }
-    
-    console.log('Working till here')
 }
 }
     function deleteTask(button) {
@@ -462,9 +460,7 @@ document.addEventListener('DOMContentLoaded', function () {
     taskRows.forEach(function (row) {
         var isCompletedCell = row.querySelector('.is_completed_task'); // Use class selector
         var taskNameCell = row.querySelector('.tasknamecross');
-        console.log('isCompletedCell.textContent:', isCompletedCell.textContent);
         if (isCompletedCell.textContent.trim() === 'True') {
-            console.log('Inside if condition');
             taskNameCell.innerHTML = '<del>' + taskNameCell.textContent + '</del>';
         }
     });
