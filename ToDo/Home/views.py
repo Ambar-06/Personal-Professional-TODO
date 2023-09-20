@@ -54,7 +54,6 @@ def signup_f(request):
             SignUpConfirmPassword = validated_data.confirmpassword
 
             if SignUpPassword != SignUpConfirmPassword:
-                print('DID NOT MATCH')
                 messages.error(request, 'Password did not match.')
                 return render(request, 'signup.html')
             
@@ -68,13 +67,10 @@ def signup_f(request):
                     SignUpNumber=SignUpNumber,
                     SignUpPassword=password_hashed
                 )
-            print('GOT IT')
             UserData.save()
-            print('SAVED')
             messages.success(request, 'Your email has been registered successfully. Login to continue')
             return render(request, 'signup.html')
         except Exception as e:
-            print(e)
             return HttpResponse(f'<h1>{e}</h1>')
 
 @cache_control(no_cache=True, must_revalidate=True)
@@ -107,7 +103,6 @@ def login_f(request):
             messages.error(request, 'Invalid password.')
             return render(request, 'login.html')
         else:
-            print(request.POST.get('loginemail'), "THEEEK PEHLE")
             request.session['loginemail'] = req_data['loginemail']
             request.session['loginpassword'] = req_data['loginpassword']
             return redirect(reverse("home"))
@@ -122,7 +117,6 @@ def is_authenticated(request):
 
     # Check if a user with the provided email exists in the custom user model
     user_data = UserSignUpModel.objects.filter(SignUpEmail=loginemail).first()
-    print(user_data)
     if user_data is None:
         # User with the provided email doesn't exist
         return False
@@ -144,11 +138,7 @@ def home_f(request):
     # Retrieve data from the session
     loginemail = request.session.get('loginemail')
     loginpassword = request.session.get('loginpassword')
-    print(loginemail)
-    print(request.method)
     if request.method == 'GET':
-        print('YES')
-        print(request)
         if is_authenticated(request):
             if loginemail:
                 userData = UserSignUpModel.objects.filter(SignUpEmail=loginemail).first()
@@ -164,9 +154,7 @@ def home_f(request):
                 taskslist = TasksModel.objects.filter(UserUUID=userId).order_by('-task_id')
                 for task in taskslist:
                     taskDeadlinedate = task.TaskDeadline.strftime('%Y-%m-%d')
-                    print(datetime.datetime.strptime(taskDeadlinedate, "%Y-%m-%d"))
                     if task.IsCompleted == "True":
-                        print(task.TaskName)
                         completed.append(task)
                     elif taskDeadlinedate == todaydatestr and task.IsCompleted != "True":
                         today.append(task)
@@ -233,14 +221,9 @@ def logout_f(request):
 @csrf_exempt
 def mark_as_complete(request):
     if request.method == 'POST':
-        print('Mark as Delete k andar')
         task_id = request.POST.get('task_id')
-        print(request.POST)
-        print(task_id)
         task = TasksModel.objects.get(task_id=task_id)
-        print(task.IsCompleted)
         task.IsCompleted = 'True'
-        print(task.IsCompleted)
         task.save()
         return JsonResponse({'message': 'Task marked as complete'})
     return JsonResponse({'error': 'Invalid request method'})
@@ -249,8 +232,6 @@ def mark_as_complete(request):
 def delete_task(request):
     if request.method == 'POST':
         task_id = request.POST.get('task_id')
-        print(request.POST)
-        print(task_id)
         task = TasksModel.objects.get(task_id=task_id)
         task.delete()
         return JsonResponse({'message': 'Task deleted'})
@@ -260,8 +241,6 @@ def delete_task(request):
 def edit_task(request):
     if request.method == 'POST':
         task_id = request.POST.get('task_id')
-        print(request.POST)
-        print(task_id)
         task = TasksModel.objects.get(task_id=task_id)
         task.delete()
         return JsonResponse({'message': 'Task deleted'})
