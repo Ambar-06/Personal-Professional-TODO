@@ -386,11 +386,11 @@ function prepopulate(button) {
         for(items in DelayedTasks){
             if(taskId===String(DelayedTasks[items].pk)){
                 let taskNameField = document.getElementById('updatetaskName');
-                taskNameField.value = DelayedTasks[items].fields['TaskName'];
+                taskNameField.value = DelayedTasks[items].fields['task_name'];
                 let taskIdField = document.getElementById('updatetaskId');
                 taskIdField.value = taskId;
                 let taskdeadline = document.getElementById('updatetaskDeadline');
-                taskdeadline.value = DelayedTasks[items].fields['TaskDeadline'].split('T')[0];
+                taskdeadline.value = DelayedTasks[items].fields['task_deadline'].split('T')[0];
         }
         }
     }
@@ -399,11 +399,11 @@ function prepopulate(button) {
         for(items in PendingTasks){
             if(taskId===String(PendingTasks[items].pk)){
                 let taskNameField = document.getElementById('updatetaskName');
-                taskNameField.value = PendingTasks[items].fields['TaskName'];
+                taskNameField.value = PendingTasks[items].fields['task_name'];
                 let taskIdField = document.getElementById('updatetaskId');
                 taskIdField.value = taskId;
                 let taskdeadline = document.getElementById('updatetaskDeadline');
-                taskdeadline.value = PendingTasks[items].fields['TaskDeadline'].split('T')[0];
+                taskdeadline.value = PendingTasks[items].fields['task_deadline'].split('T')[0];
         }
         }
 }
@@ -412,11 +412,11 @@ function prepopulate(button) {
         for(items in NearTasks){
             if(taskId===String(NearTasks[items].pk)){
                 let taskNameField = document.getElementById('updatetaskName');
-                taskNameField.value = NearTasks[items].fields['TaskName'];
+                taskNameField.value = NearTasks[items].fields['task_name'];
                 let taskIdField = document.getElementById('updatetaskId');
                 taskIdField.value = taskId;
                 let taskdeadline = document.getElementById('updatetaskDeadline');
-                taskdeadline.value = NearTasks[items].fields['TaskDeadline'].split('T')[0];
+                taskdeadline.value = NearTasks[items].fields['task_deadline'].split('T')[0];
         }
         }
 }
@@ -425,11 +425,11 @@ function prepopulate(button) {
         for(items in TodayTasks){
             if(taskId===String(TodayTasks[items].pk)){
                 let taskNameField = document.getElementById('updatetaskName');
-                taskNameField.value = TodayTasks[items].fields['TaskName'];
+                taskNameField.value = TodayTasks[items].fields['task_name'];
                 let taskIdField = document.getElementById('updatetaskId');
                 taskIdField.value = taskId;
                 let taskdeadline = document.getElementById('updatetaskDeadline');
-                taskdeadline.value = TodayTasks[items].fields['TaskDeadline'].split('T')[0];
+                taskdeadline.value = TodayTasks[items].fields['task_deadline'].split('T')[0];
         }
         }
 }

@@ -30,16 +30,17 @@ def signup_f(request):
         req_data = {
             'signupname':request.POST.get('signupname'),
             'signupemail':request.POST.get('signupemail'),
-            'signupnumber': request.POST.get('signupnumber'),
+            'signupnumber': request.POST.get('signupnumber') if request.POST.get('signupnumber') != "" else None,
             'signuppassword': request.POST.get('signuppassword'),
             'confirmpassword': request.POST.get('confirmpassword')
         }
         if UserSignUpModel.objects.filter(signup_email=request.POST.get('signupemail')):
             messages.error(request, 'User already registered.')
             return render(request, 'signup.html')
-        if UserSignUpModel.objects.filter(signup_number=request.POST.get('signupnumber')):
-            messages.error(request, 'Number already registered.')
-            return render(request, 'signup.html')
+        if request.POST.get('signupnumber') != "":
+            if UserSignUpModel.objects.filter(signup_number=request.POST.get('signupnumber')):
+                messages.error(request, 'Number already registered.')
+                return render(request, 'signup.html')
         try:
             try:
                 validated_data = UserSignUpDataSchema(**req_data)
@@ -181,11 +182,12 @@ def home_f(request):
             task_name = validated_data.TaskName,
             task_added_on = datetime.datetime.now(),
             task_deadline = validated_data.TaskDeadline,
-            is_completed = 'False'
+            is_completed = 'False',
+            is_deleted = False
             )
         taskData.save()
         return HttpResponseRedirect(request.path_info)
-    if request.method == 'PUT' and request.POST.get('methodtype') == 'put':
+    if request.method == 'POST' and request.POST.get('methodtype') == 'put':
         req_data = {
             "TaskName" : request.POST.get('UpdateTaskName'),
             "TaskDeadline" : request.POST.get('UpdateTaskDeadline')
