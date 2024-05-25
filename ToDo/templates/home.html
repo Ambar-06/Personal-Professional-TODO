@@ -98,10 +98,10 @@
                         <tbody>
                             {% for task in Today %}
                                 <tr data-id="table_rows">
-                                    <td class="p-2 tasknamecross">{{ task.TaskName }}</td>
-                                    <td class="p-2">{{ task.TaskAddedOn }}</td>
-                                    <td class="p-2">{{ task.TaskDeadline }}</td>
-                                    <td class="p-2 is_completed_task" >{{ task.IsCompleted }}</td>
+                                    <td class="p-2 tasknamecross">{{ task.task_name }}</td>
+                                    <td class="p-2">{{ task.task_added_on }}</td>
+                                    <td class="p-2">{{ task.task_deadline }}</td>
+                                    <td class="p-2 is_completed_task" >{{ task.is_completed }}</td>
                                     <td class="p-2" ><button class="black-button" data-task-id="{{ task.task_id }}-today"
                                          data-target="#updateTaskModal" data-toggle="modal" onclick="prepopulate(this)" style='border: none; display:flex'><img
                                             src="{% static 'img/edit.svg' %}" style='height:18px'
@@ -138,10 +138,10 @@
                         <tbody>
                             {% for task in Pending %}
                                 <tr data-id="table_rows">
-                                    <td class="p-2 tasknamecross">{{ task.TaskName }}</td>
-                                    <td class="p-2">{{ task.TaskAddedOn }}</td>
-                                    <td class="p-2">{{ task.TaskDeadline }}</td>
-                                    <td class="p-2 is_completed_task" >{{ task.IsCompleted }}</td>
+                                    <td class="p-2 tasknamecross">{{ task.task_name }}</td>
+                                    <td class="p-2">{{ task.task_added_on }}</td>
+                                    <td class="p-2">{{ task.task_deadline }}</td>
+                                    <td class="p-2 is_completed_task" >{{ task.is_completed }}</td>
                                     <td class="p-2" ><button class="black-button" data-task-id="{{ task.task_id }}-pending"
                                          data-target="#updateTaskModal" data-toggle="modal" onclick="prepopulate(this)" style='border: none; display:flex'><img
                                             src="{% static 'img/edit.svg' %}" style='height:18px'
@@ -178,10 +178,10 @@
                         <tbody>
                             {% for task in Near %}
                                 <tr data-id="table_rows">
-                                    <td class="p-2 tasknamecross">{{ task.TaskName }}</td>
-                                    <td class="p-2">{{ task.TaskAddedOn }}</td>
-                                    <td class="p-2">{{ task.TaskDeadline }}</td>
-                                    <td class="p-2 is_completed_task">{{ task.IsCompleted }}</td>
+                                    <td class="p-2 tasknamecross">{{ task.task_name }}</td>
+                                    <td class="p-2">{{ task.task_added_on }}</td>
+                                    <td class="p-2">{{ task.task_deadline }}</td>
+                                    <td class="p-2 is_completed_task">{{ task.is_completed }}</td>
                                     <td class="p-2" ><button class="black-button" data-task-id="{{ task.task_id }}-near"
                                          data-target="#updateTaskModal" data-toggle="modal" onclick="prepopulate(this)" style='border: none; display:flex'><img
                                             src="{% static 'img/edit.svg' %}" style='height:18px'
@@ -217,10 +217,10 @@
                         <tbody>
                             {% for task in Completed %}
                                 <tr data-id="table_rows">
-                                    <td class="p-2 tasknamecross">{{ task.TaskName }}</td>
-                                    <td class="p-2">{{ task.TaskAddedOn }}</td>
-                                    <td class="p-2">{{ task.TaskDeadline }}</td>
-                                    <td class="p-2 is_completed_task" >{{ task.IsCompleted }}</td>
+                                    <td class="p-2 tasknamecross">{{ task.task_name }}</td>
+                                    <td class="p-2">{{ task.task_added_on }}</td>
+                                    <td class="p-2">{{ task.task_deadline }}</td>
+                                    <td class="p-2 is_completed_task" >{{ task.is_completed }}</td>
                                     <td>
                                         <button class="black-button" data-task-id="{{ task.task_id }}"
                                             onclick="markAsComplete(this)" style='border: none; display:flex'><img
@@ -253,10 +253,10 @@
                         <tbody>
                             {% for task in Delayed %}
                                 <tr data-id="table_rows">
-                                    <td class="p-2 tasknamecross">{{ task.TaskName }}</td>
-                                    <td class="p-2">{{ task.TaskAddedOn }}</td>
-                                    <td class="p-2">{{ task.TaskDeadline }}</td>
-                                    <td class="p-2 is_completed_task" >{{ task.IsCompleted }}</td>
+                                    <td class="p-2 tasknamecross">{{ task.task_name }}</td>
+                                    <td class="p-2">{{ task.task_added_on }}</td>
+                                    <td class="p-2">{{ task.task_deadline }}</td>
+                                    <td class="p-2 is_completed_task" >{{ task.is_completed }}</td>
                                     <td class="p-2" ><button class="black-button" data-task-id="{{ task.task_id }}-delayed"
                                          data-target="#updateTaskModal" data-toggle="modal" onclick="prepopulate(this)" style='border: none; display:flex'><img src="{% static 'img/edit.svg' %}" style='height:18px'></button></td>
                                     <td>
@@ -330,7 +330,7 @@
                 <!-- TaskName input -->
                 <div class="form-group">
                     <label for="taskName">Task Name</label>
-                    <input type="text" class="form-control" id="updatetaskName" name='UpdateTaskName' placeholder="Enter Task Name" value='{{ task.TaskName }}'>
+                    <input type="text" class="form-control" id="updatetaskName" name='UpdateTaskName' placeholder="Enter Task Name" value='{{ task.task_name }}'>
                 </div>
                 <!-- TaskDeadline input -->
                 <div class="form-group">
