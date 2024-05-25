@@ -17,7 +17,6 @@ import datetime
 
 import hashlib
 
-
 from .schemas import *
 from .models import *
 
@@ -35,10 +34,10 @@ def signup_f(request):
             'signuppassword': request.POST.get('signuppassword'),
             'confirmpassword': request.POST.get('confirmpassword')
         }
-        if UserSignUpModel.objects.filter(SignUpEmail=request.POST.get('signupemail')):
+        if UserSignUpModel.objects.filter(signup_email=request.POST.get('signupemail')):
             messages.error(request, 'User already registered.')
             return render(request, 'signup.html')
-        if UserSignUpModel.objects.filter(SignUpNumber=request.POST.get('signupnumber')):
+        if UserSignUpModel.objects.filter(signup_number=request.POST.get('signupnumber')):
             messages.error(request, 'Number already registered.')
             return render(request, 'signup.html')
         try:
@@ -62,10 +61,10 @@ def signup_f(request):
             password_hashed = hashlib.md5(password_encoded).hexdigest()
             
             UserData = UserSignUpModel(
-                    SignUpName=SignUpName,
-                    SignUpEmail=SignUpEmail,
-                    SignUpNumber=SignUpNumber,
-                    SignUpPassword=password_hashed
+                    signup_name=SignUpName,
+                    signup_email=SignUpEmail,
+                    signup_number=SignUpNumber,
+                    signup_password=password_hashed
                 )
             UserData.save()
             messages.success(request, 'Your email has been registered successfully. Login to continue')
@@ -84,7 +83,7 @@ def login_f(request):
             'loginpassword': request.POST.get('loginpassword')
         }
 
-        if UserSignUpModel.objects.filter(SignUpEmail=request.POST.get('loginemail')) == None or UserSignUpModel.objects.filter(SignUpEmail=request.POST.get('loginemail')) == [] or UserSignUpModel.objects.filter(SignUpEmail=request.POST.get('loginemail')) == '' or len(UserSignUpModel.objects.filter(SignUpEmail=request.POST.get('loginemail'))) == 0:
+        if UserSignUpModel.objects.filter(signup_email=request.POST.get('loginemail')) == None or UserSignUpModel.objects.filter(signup_email=request.POST.get('loginemail')) == [] or UserSignUpModel.objects.filter(signup_email=request.POST.get('loginemail')) == '' or len(UserSignUpModel.objects.filter(signup_email=request.POST.get('loginemail'))) == 0:
             messages.error(request, 'User not found.')
             return render(request, 'login.html')
         try:
@@ -98,16 +97,14 @@ def login_f(request):
         password_encoded = Password.encode()
         password_hashed = hashlib.md5(password_encoded).hexdigest()
 
-        UserData = UserSignUpModel.objects.filter(SignUpEmail=request.POST.get('loginemail')).first()
-        if password_hashed != UserData.SignUpPassword:
+        UserData = UserSignUpModel.objects.filter(signup_email=request.POST.get('loginemail')).first()
+        if password_hashed != UserData.signup_password:
             messages.error(request, 'Invalid password.')
             return render(request, 'login.html')
         else:
             request.session['loginemail'] = req_data['loginemail']
             request.session['loginpassword'] = req_data['loginpassword']
             return redirect(reverse("home"))
-
-        return render(request, 'login.html')
 
 
 
@@ -116,7 +113,7 @@ def is_authenticated(request):
     loginpassword = request.session.get('loginpassword')
 
     # Check if a user with the provided email exists in the custom user model
-    user_data = UserSignUpModel.objects.filter(SignUpEmail=loginemail).first()
+    user_data = UserSignUpModel.objects.filter(signup_email=loginemail).first()
     if user_data is None:
         # User with the provided email doesn't exist
         return False
@@ -125,24 +122,20 @@ def is_authenticated(request):
     password_encoded = loginpassword.encode()
     password_hashed = hashlib.md5(password_encoded).hexdigest()
 
-    if password_hashed != user_data.SignUpPassword:
-        # Invalid password
+    if password_hashed != user_data.signup_password:
         return False
-
-    # Authentication succeeded
     return True
 
 
 @cache_control(no_cache=True, must_revalidate=True)
 def home_f(request):
-    # Retrieve data from the session
     loginemail = request.session.get('loginemail')
     loginpassword = request.session.get('loginpassword')
     if request.method == 'GET':
         if is_authenticated(request):
             if loginemail:
-                userData = UserSignUpModel.objects.filter(SignUpEmail=loginemail).first()
-                userId = userData.UserUUID
+                userData = UserSignUpModel.objects.filter(signup_email=loginemail).first()
+                userId = userData.user_uuid
                 todaydate = datetime.datetime.now()
                 todaydatestr = todaydate.strftime('%Y-%m-%d')
                 threedaysafter = todaydate + datetime.timedelta(days=3)
@@ -151,18 +144,18 @@ def home_f(request):
                 near = []
                 today = []
                 delayed = []
-                taskslist = TasksModel.objects.filter(UserUUID=userId).order_by('-task_id')
+                taskslist = TasksModel.objects.filter(user_uuid=userId, is_deleted=False).order_by('-task_id')
                 for task in taskslist:
-                    taskDeadlinedate = task.TaskDeadline.strftime('%Y-%m-%d')
-                    if task.IsCompleted == "True":
+                    taskDeadlinedate = task.task_deadline.strftime('%Y-%m-%d')
+                    if task.is_completed == "True":
                         completed.append(task)
-                    elif taskDeadlinedate == todaydatestr and task.IsCompleted != "True":
+                    elif taskDeadlinedate == todaydatestr and task.is_completed != "True":
                         today.append(task)
-                    elif datetime.datetime.strptime(taskDeadlinedate, "%Y-%m-%d") < datetime.datetime.strptime(todaydatestr, "%Y-%m-%d") and task.IsCompleted != "True":
+                    elif datetime.datetime.strptime(taskDeadlinedate, "%Y-%m-%d") < datetime.datetime.strptime(todaydatestr, "%Y-%m-%d") and task.is_completed != "True":
                         delayed.append(task)
-                    elif datetime.datetime.strptime(taskDeadlinedate, "%Y-%m-%d") < threedaysafter and task.IsCompleted != "True" and datetime.datetime.strptime(taskDeadlinedate, "%Y-%m-%d") != datetime.datetime.strptime(todaydatestr, "%Y-%m-%d"):
+                    elif datetime.datetime.strptime(taskDeadlinedate, "%Y-%m-%d") < threedaysafter and task.is_completed != "True" and datetime.datetime.strptime(taskDeadlinedate, "%Y-%m-%d") != datetime.datetime.strptime(todaydatestr, "%Y-%m-%d"):
                         near.append(task)
-                    elif task.IsCompleted != "True":
+                    elif task.is_completed != "True":
                         pending.append(task)
             today_json =  serializers.serialize('json', today)
             pending_json =  serializers.serialize('json', pending)
@@ -182,17 +175,17 @@ def home_f(request):
         except ValidationError as e:
             messages.error(request, f'{e.errors()}')
         
-        userData = UserSignUpModel.objects.filter(SignUpEmail=request.session.get('loginemail')).first()
+        userData = UserSignUpModel.objects.filter(is_completed=request.session.get('loginemail')).first()
         taskData = TasksModel(
-            UserUUID = userData.UserUUID,
-            TaskName = validated_data.TaskName,
-            TaskAddedOn = datetime.datetime.now(),
-            TaskDeadline = validated_data.TaskDeadline,
-            IsCompleted = 'False'
+            user_uuid = userData.user_uuid,
+            task_name = validated_data.TaskName,
+            task_added_on = datetime.datetime.now(),
+            task_deadline = validated_data.TaskDeadline,
+            is_completed = 'False'
             )
         taskData.save()
         return HttpResponseRedirect(request.path_info)
-    if request.method == 'POST' and request.POST.get('methodtype') == 'put':
+    if request.method == 'PUT' and request.POST.get('methodtype') == 'put':
         req_data = {
             "TaskName" : request.POST.get('UpdateTaskName'),
             "TaskDeadline" : request.POST.get('UpdateTaskDeadline')
@@ -203,12 +196,12 @@ def home_f(request):
             messages.error(request, f'{e.errors()}')
         
         try:
-            taskData = TasksModel.objects.get(task_id=request.POST.get('UpdateTaskId'))
+            taskData = TasksModel.objects.get(task_id=request.POST.get('UpdateTaskId'), is_deleted=False)
         except TasksModel.DoesNotExist:
             pass
         else:
-            taskData.TaskName = validated_data.TaskName
-            taskData.TaskDeadline = validated_data.TaskDeadline
+            taskData.task_name = validated_data.TaskName
+            taskData.task_deadline = validated_data.TaskDeadline
             taskData.save()
         return HttpResponseRedirect(request.path_info)
 
@@ -222,8 +215,8 @@ def logout_f(request):
 def mark_as_complete(request):
     if request.method == 'POST':
         task_id = request.POST.get('task_id')
-        task = TasksModel.objects.get(task_id=task_id)
-        task.IsCompleted = 'True'
+        task = TasksModel.objects.get(task_id=task_id, is_deleted=False)
+        task.is_completed = 'True'
         task.save()
         return JsonResponse({'message': 'Task marked as complete'})
     return JsonResponse({'error': 'Invalid request method'})
@@ -232,17 +225,9 @@ def mark_as_complete(request):
 def delete_task(request):
     if request.method == 'POST':
         task_id = request.POST.get('task_id')
-        task = TasksModel.objects.get(task_id=task_id)
-        task.delete()
-        return JsonResponse({'message': 'Task deleted'})
-    return JsonResponse({'error': 'Invalid request method'})
-
-@csrf_exempt
-def edit_task(request):
-    if request.method == 'POST':
-        task_id = request.POST.get('task_id')
-        task = TasksModel.objects.get(task_id=task_id)
-        task.delete()
+        task = TasksModel.objects.get(task_id=task_id, is_deleted=False)
+        task.is_deleted = True
+        task.save()
         return JsonResponse({'message': 'Task deleted'})
     return JsonResponse({'error': 'Invalid request method'})
 
