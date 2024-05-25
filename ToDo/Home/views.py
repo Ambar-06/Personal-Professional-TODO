@@ -175,7 +175,7 @@ def home_f(request):
         except ValidationError as e:
             messages.error(request, f'{e.errors()}')
         
-        userData = UserSignUpModel.objects.filter(is_completed=request.session.get('loginemail')).first()
+        userData = UserSignUpModel.objects.filter(signup_email=request.session.get('loginemail')).first()
         taskData = TasksModel(
             user_uuid = userData.user_uuid,
             task_name = validated_data.TaskName,
